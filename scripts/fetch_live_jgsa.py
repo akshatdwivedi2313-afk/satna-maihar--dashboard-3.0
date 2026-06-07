@@ -314,7 +314,7 @@ def fetch_work_monitor():
         print('fetch work monitor', block)
         try:
             html=get_html(url)
-            df=choose_table(read_tables(html), min_rows=1)
+            df=choose_work_table(read_tables(html))
             works=parse_work_rows(df, block)
             # Add link and force block name
             for w in works:
@@ -388,7 +388,17 @@ def main():
     data={'generatedAt':datetime.datetime.utcnow().isoformat()+'Z','date':DATE,'district':DISTRICT,
           'sourceUrls':{'main':BASE+'/?'+urlencode({'status':'all','district':DISTRICT,'block':'','worktype_id':'0','date':DATE}), 'officialBlockRanking':rankingUrl, 'weeklyCurrentOfficialBlockRanking':rankingUrl, 'weeklyPreviousOfficialBlockRanking':previousRankingUrl, 'workMonitorByBlock':work_urls},
           'summary':{'totalWorks':total,'completed':comp,'physicalCompleted':phy,'ongoing':ongo,'needsVerification':needs,'sanction':round(sanc,2),'booked':round(book,2),'bookedPct':round(book/sanc*100,2) if sanc else 0,'engineers':len(engineerRanking),'unmappedWorks':unmapped},
-          'works':works, 'engineerRanking':engineerRanking, 'blockRankingInternal':internalBlock, 'officialBlockRankingRows':officialRows, 'weeklyPreviousDate':PREV_DATE, 'weeklyCurrentDate':DATE, 'weeklyPreviousOfficialBlockRows':previousOfficialRows,
+          'works':works,
+          'engineerRanking':engineerRanking,
+          'blockRankingInternal':internalBlock,
+          'officialBlockRankingRows':officialRows,
+          'officialBlockRanking':officialRows,
+          'officialRankingRows':officialRows,
+          'weeklyPreviousDate':PREV_DATE,
+          'weeklyCurrentDate':DATE,
+          'weeklyPreviousOfficialBlockRows':previousOfficialRows,
+          'weeklyPreviousOfficialBlockRanking':previousOfficialRows,
+          'weeklyPreviousRankingRows':previousOfficialRows,
           'gradeLegend':{'A':'अच्छा Performance','B':'Progressing','C':'Progress Needed','D':'Critical / Poor Performance'},
           'notes':['Work data is fetched block-wise to avoid the 2000 row All-Janpad limit.','Engineer mapping comes only from engname.xlsx. JGSA work values come from live JGSA pages.']}
     validate_before_write(data)
