@@ -327,8 +327,109 @@ def fetch_work_monitor():
             print('failed block', block, e, file=sys.stderr)
     return all_works, urls
 
+OFFICIAL_CATEGORY_COLUMNS = [
+    ('Farm Pond', ['FARM POND']),
+    ('Amrit Sarovar', ['AMRIT SAROVAR','AMRIT SAROWAR']),
+    ('Dug Well Recharge', ['DUG WELL RECHARGE','DUG WELL']),
+    ('Irrigation Infrastructure', ['IRRIGATION INFRASTRUCTURE','IRRIGATION']),
+    ('Water Conservation & Recharge', ['WATER CONSERVATION','WATER CONSERVATION & RECHARGE']),
+    ('Watershed Related Works', ['WATERSHED RELATED']),
+    ('Repair & Maintenance (Water Structures)', ['REPAIR & MAINTENANCE','WATER STRUCTURES']),
+    ('Gap Filling in Plantation', ['GAP FILLING']),
+    ('Work Not Permissible in VB-GRAM-G', ['WORK NOT PERMISSIBLE','VB-GRAM'])
+]
+
+BLOCK_ALIASES = ['MAJHGAWAN','NAGOD','AMARPATAN','UNCHAHARA','RAMNAGAR','RAMPUR BAGHELAN','RAMPUR','SATNA','MAIHAR']
+
+def extract_score_from_cell(value):
+    """Official rankings cells are sometimes long explanatory text.
+    Prefer 'Final score X / 10', otherwise a simple numeric cell."""
+    s = re.sub(r'\s+', ' ', str(value or '')).strip()
+    if not s or s.lower() == 'nan':
+        return ''
+    m = re.search(r'Final\s+score\s+(-?\d+(?:\.\d+)?)\s*/\s*10', s, re.I)
+    if m:
+        return round(float(m.group(1)), 2)
+    m = re.search(r'(-?\d+(?:\.\d+)?)\s*/\s*10', s, re.I)
+    if m:
+        return round(float(m.group(1)), 2)
+    nums = re.findall(r'-?\d+(?:\.\d+)?', s.replace(',', ''))
+    if len(nums) == 1:
+        return round(float(nums[0]), 2)
+    # Many official category cells start with weight% then category score,
+    # e.g. "36.0% 5.43 Category ... Final score 5.43 / 10".
+    if len(nums) >= 2 and '%' in s[:20]:
+        try:
+            return round(float(nums[1]), 2)
+        except Exception:
+            pass
+    return s
+
+def pick_value_from_row(row, keywords):
+    # First match by column name.
+    for col, val in row.items():
+        nc = norm(col)
+        if all(k in nc for k in [norm(x) for x in keywords]):
+            return val
+    # Then match if any keyword is in column name.
+    for col, val in row.items():
+        nc = norm(col)
+        if any(norm(x) in nc for x in keywords):
+            return val
+    return ''
+
+def normalize_official_row(row, fallback_rank):
+    vals = {str(k): str(v) for k, v in row.items()}
+    rowtxt = re.sub(r'\s+', ' ', ' '.join(vals.values())).strip()
+    block = ''
+    for v in vals.values():
+        nv = norm(v)
+        for b in BLOCK_ALIASES:
+            if b in nv:
+                block = 'RAMPUR BAGHELAN' if b == 'RAMPUR' else b
+                break
+        if block:
+            break
+    if not block:
+        return None
+
+    rank_raw = pick_value_from_row(vals, ['rank']) or pick_value_from_row(vals, ['#'])
+    rank = int(num(rank_raw)) if num(rank_raw) else fallback_rank
+
+    total_raw = pick_value_from_row(vals, ['total']) or pick_value_from_row(vals, ['score'])
+    total = num(total_raw)
+    if not total:
+        # Fallback: first decimal looking like score /10 after block text.
+        candidates = [float(x) for x in re.findall(r'\b\d+(?:\.\d+)?\b', rowtxt) if 0 <= float(x) <= 10]
+        total = candidates[0] if candidates else 0
+
+    traj = pick_value_from_row(vals, ['trajectory']) or pick_value_from_row(vals, ['grade']) or ''
+    traj = str(traj).strip()
+    if len(traj) > 8:
+        m = re.search(r'\b([ABCD])\b', traj.upper())
+        traj = m.group(1) if m else traj[:8]
+
+    out = {
+        'Rank': rank,
+        'Block': block,
+        'Total': round(float(total), 2),
+        'Trajectory': traj or grade(float(total)),
+    }
+    for label, keys in OFFICIAL_CATEGORY_COLUMNS:
+        val = ''
+        # Best match by column header.
+        for col, cell in vals.items():
+            nc = norm(col)
+            if any(norm(k) in nc for k in keys):
+                val = cell
+                break
+        # Fallback by text around category label is intentionally conservative.
+        out[label] = extract_score_from_cell(val)
+    out['Source'] = 'Official rankings.php'
+    return out
+
 def fetch_official_ranking(date=None):
-    """Fetch official JGSA block ranking from rankings.php.
+    """Fetch official JGSA block ranking from rankings.php and normalize it for the dashboard.
     This source must remain separate from Work Monitor internal calculations.
     """
     use_date = date or DATE
@@ -336,28 +437,38 @@ def fetch_official_ranking(date=None):
     rows=[]
     try:
         html=get_html(url)
-        soup=BeautifulSoup(html, 'html.parser')
         tables=read_tables(html)
         candidates=[]
         for df in tables:
             df=clean_df(df)
-            text=' '.join([str(c) for c in df.columns])+' '+(' '.join(df.astype(str).values.flatten()[:200]))
-            if re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR', text, re.I):
+            text_blob=' '.join([str(c) for c in df.columns])+' '+(' '.join(df.astype(str).values.flatten()[:300]))
+            if re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', text_blob, re.I):
                 candidates.append(df)
         if candidates:
-            df=max(candidates, key=lambda d: len(d.columns))
-            # Flatten multi-index-ish names and normalize common labels.
+            # Prefer table with all janpads and category headers.
+            def cscore(d):
+                blob = norm(' '.join(map(str,d.columns))+' '+(' '.join(d.astype(str).values.flatten()[:200])))
+                score = len(d)*100 + len(d.columns)
+                for b in BLOCK_ALIASES:
+                    if b in blob: score += 200
+                for label, keys in OFFICIAL_CATEGORY_COLUMNS:
+                    if any(norm(k) in blob for k in keys): score += 50
+                return score
+            df=max(candidates, key=cscore)
             df.columns=[re.sub(r'\s+',' ',str(c)).strip() for c in df.columns]
+            fallback_rank=1
             for _,r in df.iterrows():
                 rowtxt=' '.join(str(v) for v in r.values)
                 if not re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', rowtxt, re.I):
                     continue
-                d={str(k):str(v) for k,v in r.items()}
-                rows.append(d)
+                nr = normalize_official_row({str(k):str(v) for k,v in r.items()}, fallback_rank)
+                if nr:
+                    rows.append(nr)
+                    fallback_rank += 1
+        rows = sorted(rows, key=lambda r: (int(r.get('Rank') or 999), -float(r.get('Total') or 0)))
     except Exception as e:
         print('official ranking failed', e, file=sys.stderr)
     return rows, url
-
 
 def validate_before_write(data):
     total = len(data.get('works', []))
@@ -394,6 +505,7 @@ def main():
           'officialBlockRankingRows':officialRows,
           'officialBlockRanking':officialRows,
           'officialRankingRows':officialRows,
+          'officialBlockTopCards':[{'Rank':r.get('Rank'), 'Block':r.get('Block'), 'Total':r.get('Total'), 'Completed':'', 'Started':''} for r in officialRows[:3]],
           'weeklyPreviousDate':PREV_DATE,
           'weeklyCurrentDate':DATE,
           'weeklyPreviousOfficialBlockRows':previousOfficialRows,
