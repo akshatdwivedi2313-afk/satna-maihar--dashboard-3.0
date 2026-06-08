@@ -433,12 +433,14 @@ def normalize_official_row(row, fallback_rank):
     return out
 
 
+
 def fetch_official_overview(date=None):
     """Fetch top overview KPI cards from the official JGSA overview page.
 
-    Keeps official overview values separate from Work Monitor row-level data:
-    - totalCompleted = Completed + Physically Completed from official overview
-    - abhiyanProgress = official Abhiyan Progress card
+    Important guard: the overview page has nested/parent containers. If a parent
+    container is parsed, every KPI can accidentally become the first number
+    (5953) and money can become 0. This function therefore reads the number
+    nearest to each KPI label and later validates values before summary override.
     """
     use_date = date or DATE
     url = BASE + '/?' + urlencode({'status':'all','district':DISTRICT,'block':'','worktype_id':'0','date':use_date})
@@ -450,55 +452,107 @@ def fetch_official_overview(date=None):
         def clean_text(x):
             return re.sub(r'\s+', ' ', str(x or '').strip())
 
-        def parse_money_or_number(text):
-            t = clean_text(text)
-            nums = re.findall(r'₹?\s*(-?\d[\d,]*(?:\.\d+)?)\s*(Cr|CR|करोड़|लाख|Lakh|LAKH)?', t)
-            if not nums:
+        def parse_money_token(token, unit):
+            try:
+                val = float(str(token).replace(',', ''))
+            except Exception:
                 return 0
-            n, unit = nums[0]
-            val = float(n.replace(',', ''))
-            unit = (unit or '').lower()
-            if unit in ['cr', 'करोड़']:
+            u = (unit or '').lower()
+            if u in ['cr', 'करोड़']:
                 return round(val * 10000000, 2)
-            if unit in ['lakh', 'लाख']:
+            if u in ['lakh', 'लाख']:
                 return round(val * 100000, 2)
-            return int(val) if float(val).is_integer() else val
+            return val
 
-        def first_card_value(labels, money=False):
-            labels_u = [norm(x) for x in labels]
-            best = None
-            # Prefer compact card-like elements so the whole page text is not parsed.
-            for el in soup.find_all(['div','section','article','li']):
-                txt = clean_text(el.get_text(' ', strip=True))
-                if not txt or len(txt) > 450:
+        def norm_label_text(s):
+            return re.sub(r'[^A-Z0-9]+', ' ', str(s or '').upper()).strip()
+
+        def extract_nearest_value(text, labels, money=False):
+            """Return the number/money closest to the label in a compact card text."""
+            if not text:
+                return 0
+            nt = norm_label_text(text)
+            for lbl in labels:
+                nl = norm_label_text(lbl)
+                pos = nt.find(nl)
+                if pos < 0:
                     continue
-                nt = norm(txt)
-                if any(lbl in nt for lbl in labels_u):
-                    best = txt
-                    break
-            if not best:
-                full = clean_text(soup.get_text(' ', strip=True))
-                for lbl in labels:
-                    m = re.search(re.escape(lbl) + r'.{0,120}', full, re.I)
-                    if m:
-                        best = m.group(0)
-                        break
-            if not best:
-                return 0
-            if money:
-                return parse_money_or_number(best)
-            m = re.search(r'-?\d[\d,]*(?:\.\d+)?', best)
-            if not m:
-                return 0
-            val = float(m.group(0).replace(',', ''))
-            return int(val) if val.is_integer() else val
+                # Mapping normalized position to raw position is approximate; use whole compact text.
+                if money:
+                    money_matches = list(re.finditer(r'₹\s*(-?\d[\d,]*(?:\.\d+)?)\s*(Cr|CR|करोड़|लाख|Lakh|LAKH)?', text))
+                    if not money_matches:
+                        money_matches = list(re.finditer(r'(-?\d[\d,]*(?:\.\d+)?)\s*(Cr|CR|करोड़|लाख|Lakh|LAKH)', text))
+                    if money_matches:
+                        # On official cards, the main amount appears first inside the card.
+                        m = money_matches[0]
+                        return parse_money_token(m.group(1), m.group(2) if m.lastindex and m.lastindex >= 2 else '')
+                    return 0
+                nums = list(re.finditer(r'-?\d[\d,]*(?:\.\d+)?', text))
+                if not nums:
+                    return 0
+                # For official cards, the main KPI number usually appears before label.
+                # Pick the first large visible KPI number in the compact element.
+                vals=[]
+                for m in nums:
+                    try:
+                        v=float(m.group(0).replace(',',''))
+                        vals.append((m.start(), int(v) if v.is_integer() else v))
+                    except Exception:
+                        pass
+                # Prefer a number before the label in raw text if possible.
+                raw_label_pos = min([i for i in [text.upper().find(lbl.upper()) for lbl in labels] if i >= 0] or [len(text)])
+                before=[v for s,v in vals if s < raw_label_pos]
+                if before:
+                    return before[-1]
+                return vals[0][1] if vals else 0
+            return 0
 
-        out['totalWorks'] = first_card_value(['TOTAL TARGET WORKS','Total Target Works','कुल लक्ष्य'])
-        out['totalCompleted'] = first_card_value(['TOTAL COMPLETED','Total Completed'])
+        def best_card_value(labels, money=False):
+            labels_norm = [norm_label_text(x) for x in labels]
+            candidates=[]
+            for el in soup.find_all(['div','section','article','li','span']):
+                txt = clean_text(el.get_text(' ', strip=True))
+                if not txt:
+                    continue
+                nt = norm_label_text(txt)
+                if not any(lbl in nt for lbl in labels_norm):
+                    continue
+                # Reject very large parent containers with many KPI labels.
+                label_hits = sum(1 for k in ['TOTAL TARGET WORKS','TOTAL COMPLETED','ABHIYAN PROGRESS','TOTAL SANCTIONED','TOTAL BOOKED'] if norm_label_text(k) in nt)
+                if len(txt) > 260 or label_hits > 2:
+                    continue
+                val = extract_nearest_value(txt, labels, money=money)
+                if val:
+                    candidates.append((len(txt), val, txt))
+            if candidates:
+                candidates.sort(key=lambda x: x[0])
+                return candidates[0][1]
+
+            # Conservative fallback on full page: find a number just before/after the label.
+            full = clean_text(soup.get_text(' ', strip=True))
+            for lbl in labels:
+                m = re.search(r'((?:₹\s*)?-?\d[\d,]*(?:\.\d+)?\s*(?:Cr|CR|करोड़|लाख|Lakh|LAKH)?)\s*.{0,30}?' + re.escape(lbl), full, re.I)
+                if m:
+                    if money:
+                        mm = re.search(r'₹?\s*(-?\d[\d,]*(?:\.\d+)?)\s*(Cr|CR|करोड़|लाख|Lakh|LAKH)?', m.group(1), re.I)
+                        if mm: return parse_money_token(mm.group(1), mm.group(2) or '')
+                    else:
+                        return num(m.group(1))
+                m = re.search(re.escape(lbl) + r'.{0,30}?((?:₹\s*)?-?\d[\d,]*(?:\.\d+)?\s*(?:Cr|CR|करोड़|लाख|Lakh|LAKH)?)', full, re.I)
+                if m:
+                    if money:
+                        mm = re.search(r'₹?\s*(-?\d[\d,]*(?:\.\d+)?)\s*(Cr|CR|करोड़|लाख|Lakh|LAKH)?', m.group(1), re.I)
+                        if mm: return parse_money_token(mm.group(1), mm.group(2) or '')
+                    else:
+                        return num(m.group(1))
+            return 0
+
+        out['totalWorks'] = best_card_value(['TOTAL TARGET WORKS','Total Target Works','कुल लक्ष्य'])
+        out['totalCompleted'] = best_card_value(['TOTAL COMPLETED','Total Completed'])
         out['officialTotalCompleted'] = out.get('totalCompleted', 0)
-        out['abhiyanProgress'] = first_card_value(['ABHIYAN PROGRESS','Abhiyan Progress'])
-        sanction = first_card_value(['TOTAL SANCTIONED','Total Sanctioned','TOTAL SANCTION'], money=True)
-        booked = first_card_value(['TOTAL BOOKED','Total Booked'], money=True)
+        out['abhiyanProgress'] = best_card_value(['ABHIYAN PROGRESS','Abhiyan Progress'])
+        sanction = best_card_value(['TOTAL SANCTIONED','Total Sanctioned','TOTAL SANCTION'], money=True)
+        booked = best_card_value(['TOTAL BOOKED','Total Booked'], money=True)
         if sanction:
             out['sanction'] = sanction
         if booked:
@@ -510,8 +564,6 @@ def fetch_official_overview(date=None):
     except Exception as e:
         print('official overview failed', e, file=sys.stderr)
     return out, url
-
-
 
 
 def parse_official_ranking_bs4(html):
@@ -676,11 +728,27 @@ def main():
              'bookedPct':round(book/sanc*100,2) if sanc else 0,
              'engineers':len(engineerRanking),
              'unmappedWorks':unmapped}
-    # Official overview card values override only top KPI fields, not row-level Work Monitor counts.
+    # Official overview card values override only when they pass sanity checks.
+    # This prevents a bad parser run from turning Completed/Progress into 5953 and money into ₹0.
     if officialOverview:
-        for k in ['totalWorks','totalCompleted','officialTotalCompleted','abhiyanProgress','sanction','booked','bookedPct']:
-            if officialOverview.get(k):
-                summary[k]=officialOverview[k]
+        ow_total = officialOverview.get('totalWorks')
+        if ow_total and 5000 <= ow_total <= 7000:
+            summary['totalWorks'] = ow_total
+        ow_completed = officialOverview.get('totalCompleted')
+        if ow_completed and 0 < ow_completed < summary['totalWorks']:
+            summary['totalCompleted'] = ow_completed
+            summary['officialTotalCompleted'] = ow_completed
+        ow_progress = officialOverview.get('abhiyanProgress')
+        if ow_progress and 0 < ow_progress < summary['totalWorks']:
+            summary['abhiyanProgress'] = ow_progress
+        ow_sanction = officialOverview.get('sanction')
+        if ow_sanction and ow_sanction > 100000000:
+            summary['sanction'] = ow_sanction
+        ow_booked = officialOverview.get('booked')
+        if ow_booked and ow_booked > 10000000:
+            summary['booked'] = ow_booked
+        if summary.get('sanction') and summary.get('booked'):
+            summary['bookedPct'] = round((summary['booked']/summary['sanction'])*100,2)
     if not summary.get('abhiyanProgress'):
         summary['abhiyanProgress']=summary.get('totalCompleted', comp+phy)
     data={'generatedAt':datetime.datetime.utcnow().isoformat()+'Z','date':DATE,'district':DISTRICT,
