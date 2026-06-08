@@ -525,6 +525,13 @@ def fetch_official_overview(date=None):
                 if val:
                     candidates.append((len(txt), val, txt))
             if candidates:
+                # For non-money KPI cards, nested small badges can contain numbers like
+                # AFTER 19-MAR, Completed 856, Phys 2303 etc. The visible main KPI is
+                # the largest compact numeric value in that card (e.g. 2963 for Abhiyan Progress).
+                if not money:
+                    numeric_vals = [v for _ln, v, _txt in candidates if isinstance(v, (int, float))]
+                    if numeric_vals:
+                        return max(numeric_vals)
                 candidates.sort(key=lambda x: x[0])
                 return candidates[0][1]
 
@@ -739,7 +746,9 @@ def main():
             summary['totalCompleted'] = ow_completed
             summary['officialTotalCompleted'] = ow_completed
         ow_progress = officialOverview.get('abhiyanProgress')
-        if ow_progress and 0 < ow_progress < summary['totalWorks']:
+        # Guard against parsing the "AFTER 19-MAR" label as the progress value.
+        # Valid Abhiyan Progress should be a large count, at least around physical completed works.
+        if ow_progress and max(1000, phy) <= ow_progress < summary['totalWorks']:
             summary['abhiyanProgress'] = ow_progress
         ow_sanction = officialOverview.get('sanction')
         if ow_sanction and ow_sanction > 100000000:
