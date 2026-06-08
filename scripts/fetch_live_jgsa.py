@@ -60,17 +60,24 @@ def get_html(url):
 
 def read_tables_bs4(html):
     # Manual parser keeps columns like FIN. YEAR even when pandas drops/merges scrollable table cells.
+    # IMPORTANT: use direct th/td children only. Official rankings cells contain nested markup;
+    # recursive find_all() splits one category cell into its inner numbers (Started/Completed/Phys),
+    # causing wrong values like Amrit Sarovar=456. Direct children preserve the category cell text.
     soup = BeautifulSoup(html, 'html.parser')
     tables = []
     for tbl in soup.find_all('table'):
-        headers = [re.sub(r'\s+', ' ', th.get_text(' ', strip=True)).strip() for th in tbl.find_all('th')]
+        headers = []
+        for tr in tbl.find_all('tr'):
+            ths = tr.find_all('th', recursive=False)
+            if ths:
+                headers = [re.sub(r'\s+', ' ', th.get_text(' ', strip=True)).strip() for th in ths]
+                break
         body_rows = []
         for tr in tbl.find_all('tr'):
-            cells = tr.find_all(['td'])
+            cells = tr.find_all('td', recursive=False)
             if not cells:
                 continue
             row = [re.sub(r'\s+', ' ', td.get_text(' ', strip=True)).strip() for td in cells]
-            # Expand/trim safely.
             if headers:
                 if len(row) < len(headers):
                     row += [''] * (len(headers) - len(row))
@@ -80,13 +87,10 @@ def read_tables_bs4(html):
         if body_rows:
             if not headers:
                 headers = [f'col_{i}' for i in range(max(len(r) for r in body_rows))]
-            try:
-                tables.append(pd.DataFrame(body_rows, columns=headers[:len(body_rows[0])]))
-            except Exception:
-                maxcols = max(len(r) for r in body_rows)
-                hdr = headers + [f'col_{i}' for i in range(len(headers), maxcols)]
-                body_rows = [r + ['']*(maxcols-len(r)) for r in body_rows]
-                tables.append(pd.DataFrame(body_rows, columns=hdr[:maxcols]))
+            maxcols = max(len(r) for r in body_rows)
+            hdr = headers + [f'col_{i}' for i in range(len(headers), maxcols)]
+            body_rows = [r + ['']*(maxcols-len(r)) for r in body_rows]
+            tables.append(pd.DataFrame(body_rows, columns=hdr[:maxcols]))
     return tables
 
 def read_tables(html):
@@ -428,6 +432,86 @@ def normalize_official_row(row, fallback_rank):
     out['Source'] = 'Official rankings.php'
     return out
 
+
+def fetch_official_overview(date=None):
+    """Fetch top overview KPI cards from the official JGSA overview page.
+
+    Keeps official overview values separate from Work Monitor row-level data:
+    - totalCompleted = Completed + Physically Completed from official overview
+    - abhiyanProgress = official Abhiyan Progress card
+    """
+    use_date = date or DATE
+    url = BASE + '/?' + urlencode({'status':'all','district':DISTRICT,'block':'','worktype_id':'0','date':use_date})
+    out = {}
+    try:
+        html = get_html(url)
+        soup = BeautifulSoup(html, 'html.parser')
+
+        def clean_text(x):
+            return re.sub(r'\s+', ' ', str(x or '').strip())
+
+        def parse_money_or_number(text):
+            t = clean_text(text)
+            nums = re.findall(r'₹?\s*(-?\d[\d,]*(?:\.\d+)?)\s*(Cr|CR|करोड़|लाख|Lakh|LAKH)?', t)
+            if not nums:
+                return 0
+            n, unit = nums[0]
+            val = float(n.replace(',', ''))
+            unit = (unit or '').lower()
+            if unit in ['cr', 'करोड़']:
+                return round(val * 10000000, 2)
+            if unit in ['lakh', 'लाख']:
+                return round(val * 100000, 2)
+            return int(val) if float(val).is_integer() else val
+
+        def first_card_value(labels, money=False):
+            labels_u = [norm(x) for x in labels]
+            best = None
+            # Prefer compact card-like elements so the whole page text is not parsed.
+            for el in soup.find_all(['div','section','article','li']):
+                txt = clean_text(el.get_text(' ', strip=True))
+                if not txt or len(txt) > 450:
+                    continue
+                nt = norm(txt)
+                if any(lbl in nt for lbl in labels_u):
+                    best = txt
+                    break
+            if not best:
+                full = clean_text(soup.get_text(' ', strip=True))
+                for lbl in labels:
+                    m = re.search(re.escape(lbl) + r'.{0,120}', full, re.I)
+                    if m:
+                        best = m.group(0)
+                        break
+            if not best:
+                return 0
+            if money:
+                return parse_money_or_number(best)
+            m = re.search(r'-?\d[\d,]*(?:\.\d+)?', best)
+            if not m:
+                return 0
+            val = float(m.group(0).replace(',', ''))
+            return int(val) if val.is_integer() else val
+
+        out['totalWorks'] = first_card_value(['TOTAL TARGET WORKS','Total Target Works','कुल लक्ष्य'])
+        out['totalCompleted'] = first_card_value(['TOTAL COMPLETED','Total Completed'])
+        out['officialTotalCompleted'] = out.get('totalCompleted', 0)
+        out['abhiyanProgress'] = first_card_value(['ABHIYAN PROGRESS','Abhiyan Progress'])
+        sanction = first_card_value(['TOTAL SANCTIONED','Total Sanctioned','TOTAL SANCTION'], money=True)
+        booked = first_card_value(['TOTAL BOOKED','Total Booked'], money=True)
+        if sanction:
+            out['sanction'] = sanction
+        if booked:
+            out['booked'] = booked
+        if sanction and booked:
+            out['bookedPct'] = round((booked / sanction) * 100, 2)
+        out = {k:v for k,v in out.items() if v not in [0, 0.0, '', None]}
+        print('official overview', out)
+    except Exception as e:
+        print('official overview failed', e, file=sys.stderr)
+    return out, url
+
+
 def fetch_official_ranking(date=None):
     """Fetch official JGSA block ranking from rankings.php and normalize it for the dashboard.
     This source must remain separate from Work Monitor internal calculations.
@@ -491,14 +575,35 @@ def main():
     internalBlock=calc_blocks(works)
     officialRows, rankingUrl=fetch_official_ranking(DATE)
     previousOfficialRows, previousRankingUrl=fetch_official_ranking(PREV_DATE)
+    officialOverview, overviewUrl=fetch_official_overview(DATE)
     total=len(works); needs=sum(1 for w in works if w.get('needsVerification'))
     comp=phy=ongo=0; sanc=book=0
     for w in works:
         c,p,o=status_flags(w.get('status',''), w.get('rawText',''))
         comp+=int(c); phy+=int(p); ongo+=int(o); sanc+=w.get('sanctionAmount',0) or 0; book+=w.get('bookedAmount',0) or 0
+    summary={'totalWorks':total,
+             'completed':comp,
+             'completedOnly':comp,
+             'physicalCompleted':phy,
+             'totalCompleted':comp+phy,
+             'officialTotalCompleted':comp+phy,
+             'ongoing':ongo,
+             'needsVerification':needs,
+             'sanction':round(sanc,2),
+             'booked':round(book,2),
+             'bookedPct':round(book/sanc*100,2) if sanc else 0,
+             'engineers':len(engineerRanking),
+             'unmappedWorks':unmapped}
+    # Official overview card values override only top KPI fields, not row-level Work Monitor counts.
+    if officialOverview:
+        for k in ['totalWorks','totalCompleted','officialTotalCompleted','abhiyanProgress','sanction','booked','bookedPct']:
+            if officialOverview.get(k):
+                summary[k]=officialOverview[k]
+    if not summary.get('abhiyanProgress'):
+        summary['abhiyanProgress']=summary.get('totalCompleted', comp+phy)
     data={'generatedAt':datetime.datetime.utcnow().isoformat()+'Z','date':DATE,'district':DISTRICT,
-          'sourceUrls':{'main':BASE+'/?'+urlencode({'status':'all','district':DISTRICT,'block':'','worktype_id':'0','date':DATE}), 'officialBlockRanking':rankingUrl, 'weeklyCurrentOfficialBlockRanking':rankingUrl, 'weeklyPreviousOfficialBlockRanking':previousRankingUrl, 'workMonitorByBlock':work_urls},
-          'summary':{'totalWorks':total,'completed':comp,'physicalCompleted':phy,'ongoing':ongo,'needsVerification':needs,'sanction':round(sanc,2),'booked':round(book,2),'bookedPct':round(book/sanc*100,2) if sanc else 0,'engineers':len(engineerRanking),'unmappedWorks':unmapped},
+          'sourceUrls':{'main':overviewUrl, 'officialBlockRanking':rankingUrl, 'weeklyCurrentOfficialBlockRanking':rankingUrl, 'weeklyPreviousOfficialBlockRanking':previousRankingUrl, 'workMonitorByBlock':work_urls},
+          'summary':summary,
           'works':works,
           'engineerRanking':engineerRanking,
           'blockRankingInternal':internalBlock,
