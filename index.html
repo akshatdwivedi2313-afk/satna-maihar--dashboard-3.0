@@ -399,7 +399,12 @@ function openVerificationBreakdown(name){
 }
 
 function fblocks(){let q=currentSearch(), arr=calcBlocks(fworks()); return arr.filter(b=>matchSearch(b,q))}
-function fengs(){let q=currentSearch(), arr=calcEngineers(fworks()); return arr.filter(e=>matchSearch(e,q))}
+function fengs(){
+let q=currentSearch();
+let baseWorks=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q));
+let ranked=calcEngineers(baseWorks);
+return ranked.filter(e=>passEngineer({engineer:e.engineer}));
+}
 function fOfficialRows(){let q=currentSearch(); return (D.officialBlockRankingRows||[]).filter(r=>{let b=String(r.Block||r.block||'').toUpperCase(); let fake={block:b}; return passDistrictBlock(fake)&&matchSearch(r,q)})}
 function app(html){document.getElementById('app').innerHTML=html}
 function statusFlags(w){let s=String(w.status||'').trim().toUpperCase(); let phys=(s==='PHYSICALLY COMPLETED')||s.includes('PHYSICALLY COMPLETED')||s.includes('PHYCS')||s.includes('भौतिक'); let comp=!phys&&((s==='COMPLETED')||s.includes('COMPLETED')||s==='COMPLETE'||s.includes('पूर्ण')); let ongoing=(s==='ONGOING')||s.includes('ONGOING')||s.includes('प्रगतिरत')||s.includes('IN PROGRESS')||s.includes('चालू'); return {comp,phys,ongoing}}
@@ -497,10 +502,20 @@ function weeklyTracker(){
 function dna(){
   let years=availableYears();
   let y=selectedDNAYear();
+  // Display rows respect all filters including selected Engineer.
   let baseRows=byYear(fworks(),y);
   let typeFilter=selectedDNAFilter('type');
   if(typeFilter) baseRows=baseRows.filter(w=>normType(w.workType)===typeFilter);
-  let engRows=calcEngineers(baseRows).filter(e=>matchSearch(e,currentSearch()));
+
+  // Ranking rows intentionally IGNORE only the Engineer filter.
+  // This keeps Janpad Rank frozen on the full Janpad list even when one engineer is selected.
+  // Example: if an engineer is Rank 7 in MAIHAR, selecting that engineer still shows Rank 7, not Rank 1.
+  let q=currentSearch();
+  let rankRows=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q));
+  rankRows=byYear(rankRows,y);
+  if(typeFilter) rankRows=rankRows.filter(w=>normType(w.workType)===typeFilter);
+
+  let engRows=calcEngineers(rankRows).filter(e=>passEngineer({engineer:e.engineer})).filter(e=>matchSearch(e,currentSearch()));
   const remOf=e=>Math.max(0,Number(e.sanction||0)-Number(e.booked||0));
   const scoreF=selectedDNAFilter('score'), verF=selectedDNAFilter('verification'), ongF=selectedDNAFilter('ongoing'), remF=selectedDNAFilter('remaining'), viewF=selectedDNAFilter('view'), sortF=selectedDNAFilter('sort')||'scoreDesc';
   engRows=engRows.filter(e=>{
