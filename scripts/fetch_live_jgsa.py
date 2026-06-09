@@ -574,133 +574,24 @@ def fetch_official_overview(date=None):
 
 
 def parse_official_ranking_bs4(html):
-    """Parse rankings.php official block scorecard from visible text first.
-
-    The portal's ranking table contains nested/expanded category text, so pandas/read_html
-    can shift category marks into wrong columns. This parser reads the official visible
-    row text and extracts each category's own "Final score X / 10". It only affects
-    officialBlockRankingRows; Work Monitor/overview logic stays untouched.
+    """Parse rankings.php official table using ONLY top-level row cells.
+    This avoids nested count/detail values being shifted into score columns.
     """
     soup = BeautifulSoup(html, 'html.parser')
-
-    def clean_line(x):
-        return re.sub(r'\s+', ' ', str(x or '').replace('\xa0', ' ')).strip()
-
-    # Remove scripts/styles and get a stable line stream similar to the browser text.
-    for tag in soup(['script', 'style', 'noscript']):
-        tag.decompose()
-    lines = [clean_line(x) for x in soup.get_text('\n').split('\n')]
-    lines = [x for x in lines if x]
-
-    # Prefer content after the block-level heading when present.
-    start_idx = 0
-    for i, line in enumerate(lines):
-        if re.search(r'Category\s+Scorecard', line, re.I) or re.search(r'Block\s+Level', line, re.I):
-            start_idx = i
-            break
-    lines2 = lines[start_idx:]
-
-    block_re = re.compile(r'\b(MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR\s+BAGHELAN|RAMPUR|SATNA|MAIHAR)\b', re.I)
-
-    def is_block_header(line):
-        u = norm(line)
-        if not any(b in u for b in BLOCK_ALIASES):
-            return False
-        # Header normally has a total score nearby or a rank/card marker. Avoid category detail lines.
-        if re.search(r'Category|Final score|Started|Completed|Ongoing|Water conservation|Watershed', line, re.I):
-            return False
-        nums = [float(x) for x in re.findall(r'\b\d+(?:\.\d+)?\b', line.replace(',', '')) if 0 <= float(x) <= 10]
-        return bool(nums) or bool(re.search(r'Rank\s*#?\d+|↗|🥇|🥈|🥉', line, re.I))
-
-    starts=[]
-    for i,line in enumerate(lines2):
-        if is_block_header(line):
-            m=block_re.search(line)
-            if m:
-                starts.append((i, m.group(1).upper().replace('  ', ' '), line))
-
-    # De-duplicate adjacent repeated card/table headers for the same block.
-    dedup=[]
-    for item in starts:
-        if dedup and item[1] == dedup[-1][1] and item[0] - dedup[-1][0] <= 3:
-            continue
-        dedup.append(item)
-    starts=dedup
-
-    def first_score_after_block(header, seg):
-        txt = clean_line(header + ' ' + ' '.join(seg[:6]))
-        # Prefer explicit score after arrow or block name.
-        m = re.search(r'(?:↗|'+re.escape(header.split()[0])+r')\s*(\d+(?:\.\d+)?)\b', txt, re.I)
-        if m and 0 <= float(m.group(1)) <= 10:
-            return float(m.group(1))
-        nums = [float(x) for x in re.findall(r'\b\d+(?:\.\d+)?\b', txt.replace(',', '')) if 0 <= float(x) <= 10]
-        # Skip a leading rank number when a line starts with rank + block.
-        if nums and re.match(r'^\d+\s+', header):
-            nums = nums[1:] or nums
-        return nums[0] if nums else 0
-
-    def cat_score(segment, label, keys):
-        seg = [clean_line(x) for x in segment]
-        for idx,line in enumerate(seg):
-            lu = norm(line)
-            if 'CATEGORY' in lu and any(norm(k) in lu for k in keys):
-                window = ' '.join(seg[idx:idx+18])
-                m = re.search(r'Final\s+score\s+(-?\d+(?:\.\d+)?)\s*/\s*10', window, re.I)
-                if m:
-                    return round(float(m.group(1)), 2)
-                # Fallback: the score is often on the weight line just before Category, e.g. "36.9% 6.81".
-                prev = seg[max(0, idx-2):idx]
-                prev_nums=[]
-                for pl in prev:
-                    prev_nums += [float(x) for x in re.findall(r'\b\d+(?:\.\d+)?\b', pl.replace(',', '')) if 0 <= float(x) <= 10]
-                if prev_nums:
-                    return round(prev_nums[-1], 2)
-        return ''
-
-    rows=[]
-    for pos,(idx,block,header) in enumerate(starts):
-        next_idx = starts[pos+1][0] if pos+1 < len(starts) else len(lines2)
-        segment = lines2[idx:next_idx]
-        # Require some category detail in the segment, otherwise this is probably a top-card duplicate.
-        segblob = norm(' '.join(segment[:80]))
-        if not any(norm(k) in segblob for _, keys in OFFICIAL_CATEGORY_COLUMNS for k in keys):
-            continue
-        rank = pos + 1
-        m_rank = re.match(r'^(\d+)\s+', header)
-        if m_rank:
-            rank = int(m_rank.group(1))
-        if block == 'RAMPUR':
-            block = 'RAMPUR BAGHELAN'
-        total = first_score_after_block(header, segment)
-        out = {'Rank': rank, 'Block': block, 'Total': round(float(total), 2), 'Trajectory': grade(float(total))}
-        for label, keys in OFFICIAL_CATEGORY_COLUMNS:
-            out[label] = cat_score(segment, label, keys)
-        out['Source'] = 'Official rankings.php'
-        if out['Block'] and out['Total']:
-            rows.append(out)
-
-    # If text parser fails, use the old top-level-table parser as a last resort.
-    if rows:
-        seen=set(); final=[]
-        for r in rows:
-            if r['Block'] in seen:
-                continue
-            seen.add(r['Block']); final.append(r)
-        return sorted(final, key=lambda r: (int(r.get('Rank') or 999), -float(r.get('Total') or 0)))
-
     best_headers = []
     best_rows = []
     for tbl in soup.find_all('table'):
         headers = []
         body = []
         for tr in tbl.find_all('tr'):
+            # IMPORTANT: recursive=False prevents nested mini-tables/spans from becoming extra columns.
             ths = tr.find_all('th', recursive=False)
             tds = tr.find_all('td', recursive=False)
             if ths and len(ths) >= 6:
-                headers = [clean_line(c.get_text(' ', strip=True)) for c in ths]
+                headers = [re.sub(r'\s+', ' ', c.get_text(' ', strip=True)).strip() for c in ths]
                 continue
             if tds and len(tds) >= 6:
-                vals = [clean_line(c.get_text(' ', strip=True)) for c in tds]
+                vals = [re.sub(r'\s+', ' ', c.get_text(' ', strip=True)).strip() for c in tds]
                 body.append(vals)
         blob = norm(' '.join(headers) + ' ' + ' '.join(' '.join(r) for r in body[:10]))
         if not any(b in blob for b in BLOCK_ALIASES):
@@ -740,7 +631,11 @@ def official_rows_valid(rows):
                 return False
     return True
 
-def load_existing_official_rows():
+def load_existing_official_rows(expected_date=None):
+    """Return existing official rows only as a last-resort same-date fallback.
+    Do not keep yesterday's rows after a new daily update, because that makes
+    the dashboard disagree with the official JGSA ranking page.
+    """
     try:
         if not os.path.exists(OUT):
             return []
@@ -749,6 +644,8 @@ def load_existing_official_rows():
         if not m:
             return []
         old = json.loads(m.group(1))
+        if expected_date and str(old.get('date') or '') != str(expected_date):
+            return []
         rows = old.get('officialBlockRankingRows') or old.get('officialBlockRanking') or []
         return rows if official_rows_valid(rows) else []
     except Exception as e:
@@ -756,43 +653,69 @@ def load_existing_official_rows():
         return []
 
 def fetch_official_ranking(date=None):
-    """Fetch official JGSA block ranking from rankings.php and normalize it for the dashboard.
-    This source must remain separate from Work Monitor internal calculations.
+    """Fetch official JGSA block ranking from rankings.php and normalize it.
+
+    Critical rule: fresh valid official rows must always replace old rows.
+    Fallback to existing rows is allowed only when the fresh parser returns no
+    valid table for the same date. This prevents stale 08-06 values from being
+    preserved on 09-06 while still protecting the dashboard from a transient
+    portal/parse failure.
     """
     use_date = date or DATE
-    url=BASE+'/rankings.php?'+urlencode({'level':'block','date':use_date,'district':DISTRICT})
-    rows=[]
+    url = BASE + '/rankings.php?' + urlencode({'level':'block','date':use_date,'district':DISTRICT})
+    rows = []
     try:
-        html=get_html(url)
-        tables=read_tables(html)
-        candidates=[]
-        for df in tables:
-            df=clean_df(df)
-            text_blob=' '.join([str(c) for c in df.columns])+' '+(' '.join(df.astype(str).values.flatten()[:300]))
-            if re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', text_blob, re.I):
-                candidates.append(df)
-        if candidates:
-            # Prefer table with all janpads and category headers.
-            def cscore(d):
-                blob = norm(' '.join(map(str,d.columns))+' '+(' '.join(d.astype(str).values.flatten()[:200])))
-                score = len(d)*100 + len(d.columns)
-                for b in BLOCK_ALIASES:
-                    if b in blob: score += 200
-                for label, keys in OFFICIAL_CATEGORY_COLUMNS:
-                    if any(norm(k) in blob for k in keys): score += 50
-                return score
-            df=max(candidates, key=cscore)
-            df.columns=[re.sub(r'\s+',' ',str(c)).strip() for c in df.columns]
-            fallback_rank=1
-            for _,r in df.iterrows():
-                rowtxt=' '.join(str(v) for v in r.values)
-                if not re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', rowtxt, re.I):
-                    continue
-                nr = normalize_official_row({str(k):str(v) for k,v in r.items()}, fallback_rank)
-                if nr:
-                    rows.append(nr)
-                    fallback_rank += 1
-        rows = sorted(rows, key=lambda r: (int(r.get('Rank') or 999), -float(r.get('Total') or 0)))
+        html = get_html(url)
+
+        # 1) Preferred parser: BeautifulSoup with direct cells only. This matches
+        # the official rendered table and avoids nested count/detail values.
+        bs4_rows = parse_official_ranking_bs4(html)
+        if official_rows_valid(bs4_rows):
+            rows = bs4_rows
+            print('official ranking bs4 rows', len(rows), 'date', use_date)
+        else:
+            print('official ranking bs4 invalid/empty rows', len(bs4_rows), 'date', use_date)
+
+        # 2) Backup parser: pandas/manual tables. Used only if BS4 failed.
+        if not official_rows_valid(rows):
+            tables = read_tables(html)
+            candidates = []
+            for df in tables:
+                df = clean_df(df)
+                text_blob = ' '.join([str(c) for c in df.columns]) + ' ' + (' '.join(df.astype(str).values.flatten()[:300]))
+                if re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', text_blob, re.I):
+                    candidates.append(df)
+            if candidates:
+                def cscore(d):
+                    blob = norm(' '.join(map(str,d.columns))+' '+(' '.join(d.astype(str).values.flatten()[:200])))
+                    score = len(d)*100 + len(d.columns)
+                    for b in BLOCK_ALIASES:
+                        if b in blob: score += 200
+                    for label, keys in OFFICIAL_CATEGORY_COLUMNS:
+                        if any(norm(k) in blob for k in keys): score += 50
+                    return score
+                df = max(candidates, key=cscore)
+                df.columns = [re.sub(r'\s+',' ',str(c)).strip() for c in df.columns]
+                fallback_rank = 1
+                p_rows = []
+                for _, r in df.iterrows():
+                    rowtxt = ' '.join(str(v) for v in r.values)
+                    if not re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', rowtxt, re.I):
+                        continue
+                    nr = normalize_official_row({str(k):str(v) for k,v in r.items()}, fallback_rank)
+                    if nr:
+                        p_rows.append(nr)
+                        fallback_rank += 1
+                if official_rows_valid(p_rows):
+                    rows = p_rows
+                    print('official ranking pandas rows', len(rows), 'date', use_date)
+                else:
+                    print('official ranking pandas invalid/empty rows', len(p_rows), 'date', use_date)
+
+        if official_rows_valid(rows):
+            rows = sorted(rows, key=lambda r: (int(r.get('Rank') or 999), -float(r.get('Total') or 0)))
+        else:
+            rows = []
     except Exception as e:
         print('official ranking failed', e, file=sys.stderr)
     return rows, url
@@ -818,7 +741,7 @@ def main():
     internalBlock=calc_blocks(works)
     officialRows, rankingUrl=fetch_official_ranking(DATE)
     if not official_rows_valid(officialRows):
-        fallback_rows = load_existing_official_rows()
+        fallback_rows = load_existing_official_rows(DATE)
         if fallback_rows:
             print('official ranking invalid; keeping existing official rows fallback')
             officialRows = fallback_rows
