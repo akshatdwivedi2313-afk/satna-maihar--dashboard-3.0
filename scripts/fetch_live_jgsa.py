@@ -648,44 +648,68 @@ def load_existing_official_rows():
 
 def fetch_official_ranking(date=None):
     """Fetch official JGSA block ranking from rankings.php and normalize it for the dashboard.
-    This source must remain separate from Work Monitor internal calculations.
+
+    IMPORTANT: Official ranking scores must be scraped from the visible rankings.php
+    block table only. Do not use pandas/read_html table guessing as the primary path;
+    it can pick an old/hidden/auxiliary table when the portal markup changes, which
+    makes category scores like Amrit Sarovar differ from the official site.
     """
     use_date = date or DATE
-    url=BASE+'/rankings.php?'+urlencode({'level':'block','date':use_date,'district':DISTRICT})
-    rows=[]
+    url = BASE + '/rankings.php?' + urlencode({'level': 'block', 'date': use_date, 'district': DISTRICT})
+    rows = []
     try:
-        html=get_html(url)
-        tables=read_tables(html)
-        candidates=[]
-        for df in tables:
-            df=clean_df(df)
-            text_blob=' '.join([str(c) for c in df.columns])+' '+(' '.join(df.astype(str).values.flatten()[:300]))
-            if re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', text_blob, re.I):
-                candidates.append(df)
-        if candidates:
-            # Prefer table with all janpads and category headers.
-            def cscore(d):
-                blob = norm(' '.join(map(str,d.columns))+' '+(' '.join(d.astype(str).values.flatten()[:200])))
-                score = len(d)*100 + len(d.columns)
-                for b in BLOCK_ALIASES:
-                    if b in blob: score += 200
-                for label, keys in OFFICIAL_CATEGORY_COLUMNS:
-                    if any(norm(k) in blob for k in keys): score += 50
-                return score
-            df=max(candidates, key=cscore)
-            df.columns=[re.sub(r'\s+',' ',str(c)).strip() for c in df.columns]
-            fallback_rank=1
-            for _,r in df.iterrows():
-                rowtxt=' '.join(str(v) for v in r.values)
-                if not re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', rowtxt, re.I):
-                    continue
-                nr = normalize_official_row({str(k):str(v) for k,v in r.items()}, fallback_rank)
-                if nr:
-                    rows.append(nr)
-                    fallback_rank += 1
+        html = get_html(url)
+
+        # Primary, strict parser: direct top-level TR/TH/TD from the official visible table.
+        # This prevents nested score/detail markup from shifting values between columns.
+        rows = parse_official_ranking_bs4(html)
+
+        # Conservative fallback only if the strict parser fails completely. This is kept for
+        # emergency compatibility, but current action validation will reject invalid/stale rows.
+        if not official_rows_valid(rows):
+            rows = []
+            tables = read_tables(html)
+            candidates = []
+            for df in tables:
+                df = clean_df(df)
+                text_blob = ' '.join([str(c) for c in df.columns]) + ' ' + (' '.join(df.astype(str).values.flatten()[:300]))
+                blob = norm(text_blob)
+                has_block = any(b in blob for b in BLOCK_ALIASES)
+                has_categories = sum(1 for _label, keys in OFFICIAL_CATEGORY_COLUMNS if any(norm(k) in blob for k in keys))
+                has_rank_total = ('RANK' in blob and ('TOTAL' in blob or 'SCORE' in blob))
+                # Require multiple official category headers so an auxiliary/old table is not selected.
+                if has_block and has_rank_total and has_categories >= 5:
+                    candidates.append(df)
+            if candidates:
+                def cscore(d):
+                    blob = norm(' '.join(map(str, d.columns)) + ' ' + (' '.join(d.astype(str).values.flatten()[:300])))
+                    score = 0
+                    # A real block ranking has about the eight Satna+Maihar blocks and category headers.
+                    score += 500 * sum(1 for b in BLOCK_ALIASES if b in blob)
+                    score += 200 * sum(1 for _label, keys in OFFICIAL_CATEGORY_COLUMNS if any(norm(k) in blob for k in keys))
+                    score += 100 if 'RANK' in blob else 0
+                    score += 100 if 'TOTAL' in blob else 0
+                    score += len(d) * 10 + len(d.columns)
+                    return score
+                df = max(candidates, key=cscore)
+                df.columns = [re.sub(r'\s+', ' ', str(c)).strip() for c in df.columns]
+                fallback_rank = 1
+                for _, r in df.iterrows():
+                    rowtxt = ' '.join(str(v) for v in r.values)
+                    if not re.search(r'MAJHGAWAN|NAGOD|AMARPATAN|UNCHAHARA|RAMNAGAR|RAMPUR|SATNA|MAIHAR', rowtxt, re.I):
+                        continue
+                    nr = normalize_official_row({str(k): str(v) for k, v in r.items()}, fallback_rank)
+                    if nr:
+                        rows.append(nr)
+                        fallback_rank += 1
+
+        # Keep official order by Rank. Never recalculate these scores from Work Monitor.
         rows = sorted(rows, key=lambda r: (int(r.get('Rank') or 999), -float(r.get('Total') or 0)))
+        if not official_rows_valid(rows):
+            raise RuntimeError('Official block ranking parse invalid; refusing stale/internal ranking fallback')
     except Exception as e:
         print('official ranking failed', e, file=sys.stderr)
+        rows = []
     return rows, url
 
 def validate_before_write(data):
@@ -709,10 +733,7 @@ def main():
     internalBlock=calc_blocks(works)
     officialRows, rankingUrl=fetch_official_ranking(DATE)
     if not official_rows_valid(officialRows):
-        fallback_rows = load_existing_official_rows()
-        if fallback_rows:
-            print('official ranking invalid; keeping existing official rows fallback')
-            officialRows = fallback_rows
+        raise RuntimeError('Current official block ranking is invalid/unavailable; refusing to overwrite jgsa_live_data.js with stale scores.')
     previousOfficialRows, previousRankingUrl=fetch_official_ranking(PREV_DATE)
     if not official_rows_valid(previousOfficialRows):
         previousOfficialRows = []
