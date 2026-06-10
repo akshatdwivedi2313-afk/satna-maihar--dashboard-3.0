@@ -631,26 +631,174 @@ def official_rows_valid(rows):
                 return False
     return True
 
-def load_existing_official_rows(expected_date=None):
-    """Return existing official rows only as a last-resort same-date fallback.
-    Do not keep yesterday's rows after a new daily update, because that makes
-    the dashboard disagree with the official JGSA ranking page.
+LAST_GOOD_OFFICIAL_BLOCK_RANKING_ROWS = [
+  {
+    "Rank": 1,
+    "Block": "MAJHGAWAN",
+    "Total": 5.86,
+    "Trajectory": "D",
+    "Farm Pond": 5.47,
+    "Amrit Sarovar": 1.92,
+    "Dug Well Recharge": 6.63,
+    "Irrigation Infrastructure": 10.0,
+    "Water Conservation & Recharge": 7.89,
+    "Watershed Related Works": 7.76,
+    "Repair & Maintenance (Water Structures)": 10.0,
+    "Gap Filling in Plantation": 1.78,
+    "Work Not Permissible in VB-GRAM-G": 2.17,
+    "Source": "Official rankings.php text parser"
+  },
+  {
+    "Rank": 2,
+    "Block": "SATNA",
+    "Total": 5.46,
+    "Trajectory": "D",
+    "Farm Pond": 4.94,
+    "Amrit Sarovar": 1.51,
+    "Dug Well Recharge": 6.33,
+    "Irrigation Infrastructure": 7.05,
+    "Water Conservation & Recharge": 7.39,
+    "Watershed Related Works": 7.35,
+    "Repair & Maintenance (Water Structures)": 5.64,
+    "Gap Filling in Plantation": 0.3,
+    "Work Not Permissible in VB-GRAM-G": 2.89,
+    "Source": "Official rankings.php text parser"
+  },
+  {
+    "Rank": 3,
+    "Block": "NAGOD",
+    "Total": 5.35,
+    "Trajectory": "D",
+    "Farm Pond": 4.35,
+    "Amrit Sarovar": 1.0,
+    "Dug Well Recharge": 6.51,
+    "Irrigation Infrastructure": 10.0,
+    "Water Conservation & Recharge": 6.82,
+    "Watershed Related Works": 10.0,
+    "Repair & Maintenance (Water Structures)": 10.0,
+    "Gap Filling in Plantation": 1.86,
+    "Work Not Permissible in VB-GRAM-G": 0.86,
+    "Source": "Official rankings.php text parser"
+  },
+  {
+    "Rank": 4,
+    "Block": "RAMPUR BAGHELAN",
+    "Total": 5.03,
+    "Trajectory": "D",
+    "Farm Pond": 4.24,
+    "Amrit Sarovar": 0.47,
+    "Dug Well Recharge": 6.92,
+    "Irrigation Infrastructure": 6.03,
+    "Water Conservation & Recharge": 8.04,
+    "Watershed Related Works": 6.42,
+    "Repair & Maintenance (Water Structures)": 7.44,
+    "Gap Filling in Plantation": 1.13,
+    "Work Not Permissible in VB-GRAM-G": 1.81,
+    "Source": "Official rankings.php text parser"
+  },
+  {
+    "Rank": 5,
+    "Block": "MAIHAR",
+    "Total": 4.94,
+    "Trajectory": "D",
+    "Farm Pond": 4.56,
+    "Amrit Sarovar": 0.0,
+    "Dug Well Recharge": 7.17,
+    "Irrigation Infrastructure": 8.33,
+    "Water Conservation & Recharge": 7.59,
+    "Watershed Related Works": 6.94,
+    "Repair & Maintenance (Water Structures)": 6.48,
+    "Gap Filling in Plantation": 1.55,
+    "Work Not Permissible in VB-GRAM-G": 2.17,
+    "Source": "Official rankings.php text parser"
+  },
+  {
+    "Rank": 6,
+    "Block": "AMARPATAN",
+    "Total": 4.87,
+    "Trajectory": "D",
+    "Farm Pond": 2.85,
+    "Amrit Sarovar": "",
+    "Dug Well Recharge": 4.43,
+    "Irrigation Infrastructure": "",
+    "Water Conservation & Recharge": 10.0,
+    "Watershed Related Works": "",
+    "Repair & Maintenance (Water Structures)": 10.0,
+    "Gap Filling in Plantation": 0.9,
+    "Work Not Permissible in VB-GRAM-G": 1.88,
+    "Source": "Official rankings.php text parser"
+  },
+  {
+    "Rank": 7,
+    "Block": "RAMNAGAR",
+    "Total": 4.83,
+    "Trajectory": "D",
+    "Farm Pond": 4.47,
+    "Amrit Sarovar": "",
+    "Dug Well Recharge": 10.0,
+    "Irrigation Infrastructure": 10.0,
+    "Water Conservation & Recharge": 10.0,
+    "Watershed Related Works": 10.0,
+    "Repair & Maintenance (Water Structures)": 10.0,
+    "Gap Filling in Plantation": 10.0,
+    "Work Not Permissible in VB-GRAM-G": 1.48,
+    "Source": "Official rankings.php text parser"
+  },
+  {
+    "Rank": 8,
+    "Block": "UNCHAHARA",
+    "Total": 4.59,
+    "Trajectory": "D",
+    "Farm Pond": 2.92,
+    "Amrit Sarovar": "",
+    "Dug Well Recharge": 6.14,
+    "Irrigation Infrastructure": "",
+    "Water Conservation & Recharge": 7.07,
+    "Watershed Related Works": 8.71,
+    "Repair & Maintenance (Water Structures)": 7.39,
+    "Gap Filling in Plantation": 1.51,
+    "Work Not Permissible in VB-GRAM-G": 1.73,
+    "Source": "Official rankings.php text parser"
+  }
+]
+
+def load_existing_official_rows(expected_date=None, allow_any_date=True):
+    """Return last valid official rows from current jgsa_live_data.js.
+
+    Priority:
+    1) same-date rows when available,
+    2) any-date rows from the existing deployed data file,
+    3) bundled last-good official rows.
+
+    This prevents the dashboard from being overwritten with an empty Official
+    Block Ranking when the portal ranking page is temporarily unavailable.
     """
+    same_date_rows = []
+    any_date_rows = []
     try:
-        if not os.path.exists(OUT):
-            return []
-        txt = open(OUT, encoding='utf-8').read()
-        m = re.search(r'window\.JGSA_LIVE_DATA\s*=\s*(\{.*\})\s*;?\s*$', txt, re.S)
-        if not m:
-            return []
-        old = json.loads(m.group(1))
-        if expected_date and str(old.get('date') or '') != str(expected_date):
-            return []
-        rows = old.get('officialBlockRankingRows') or old.get('officialBlockRanking') or []
-        return rows if official_rows_valid(rows) else []
+        if os.path.exists(OUT):
+            txt = open(OUT, encoding='utf-8').read()
+            m = re.search(r'window\.JGSA_LIVE_DATA\s*=\s*(\{.*\})\s*;?\s*$', txt, re.S)
+            if m:
+                old = json.loads(m.group(1))
+                rows = old.get('officialBlockRankingRows') or old.get('officialBlockRanking') or []
+                if official_rows_valid(rows):
+                    any_date_rows = rows
+                    if expected_date and str(old.get('date') or '') == str(expected_date):
+                        same_date_rows = rows
     except Exception as e:
         print('existing official rows fallback failed', e, file=sys.stderr)
-        return []
+
+    if same_date_rows:
+        return same_date_rows
+    if allow_any_date and any_date_rows:
+        print('official ranking fallback: using previous valid deployed official rows')
+        return any_date_rows
+    if official_rows_valid(LAST_GOOD_OFFICIAL_BLOCK_RANKING_ROWS):
+        print('official ranking fallback: using bundled last-good official rows')
+        return LAST_GOOD_OFFICIAL_BLOCK_RANKING_ROWS
+    return []
+
 
 def fetch_official_ranking(date=None):
     """Fetch official JGSA block ranking from rankings.php and normalize it.
@@ -722,6 +870,8 @@ def fetch_official_ranking(date=None):
 
 def validate_before_write(data):
     total = len(data.get('works', []))
+    if not official_rows_valid(data.get('officialBlockRankingRows') or data.get('officialBlockRanking') or []):
+        raise RuntimeError('Official Block Ranking rows are empty/invalid; refusing to overwrite dashboard with blank ranking table.')
     if total < 5000:
         raise RuntimeError(f'Fetched only {total} works; refusing to overwrite dashboard data. Check Work Monitor parsing/portal availability.')
     return True
@@ -741,13 +891,13 @@ def main():
     internalBlock=calc_blocks(works)
     officialRows, rankingUrl=fetch_official_ranking(DATE)
     if not official_rows_valid(officialRows):
-        fallback_rows = load_existing_official_rows(DATE)
+        fallback_rows = load_existing_official_rows(DATE, allow_any_date=True)
         if fallback_rows:
-            print('official ranking invalid; keeping existing official rows fallback')
+            print('official ranking invalid/empty; keeping last valid official rows fallback')
             officialRows = fallback_rows
     previousOfficialRows, previousRankingUrl=fetch_official_ranking(PREV_DATE)
     if not official_rows_valid(previousOfficialRows):
-        previousOfficialRows = []
+        previousOfficialRows = load_existing_official_rows(PREV_DATE, allow_any_date=True)
     officialOverview, overviewUrl=fetch_official_overview(DATE)
     total=len(works); needs=sum(1 for w in works if w.get('needsVerification'))
     comp=phy=ongo=0; sanc=book=0
