@@ -171,6 +171,82 @@ th{background:linear-gradient(180deg,#eef6ff,#eaf3ff);color:#1e3a5f;white-space:
 body.login-locked{overflow:hidden}
 
 </style>
+
+<style id="compact-shreni-ui-fix">
+/* Compact top navigation tabs */
+.tabs, .tabbar, .navTabs, .dashboardTabs {
+  gap: 8px !important;
+}
+.tab, .tabs button, .tabbar button, .navTabs button, .dashboardTabs button {
+  padding: 8px 13px !important;
+  border-radius: 13px !important;
+  font-size: 13px !important;
+  min-height: 34px !important;
+  line-height: 1.15 !important;
+}
+@media (max-width: 1280px){
+  .tab, .tabs button, .tabbar button, .navTabs button, .dashboardTabs button {
+    padding: 7px 10px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* Shreni Engineer card mini boxes */
+.pill {
+  background: linear-gradient(135deg,#e0f2fe,#dbeafe) !important;
+  border: 1px solid #93c5fd !important;
+  color: #075985 !important;
+  box-shadow: 0 3px 10px rgba(37,99,235,.12) !important;
+  font-weight: 800 !important;
+  border-radius: 999px !important;
+  padding: 5px 10px !important;
+  white-space: nowrap !important;
+}
+.pill:nth-child(1), .pill:nth-child(2) {
+  background: linear-gradient(135deg,#fff7ed,#ffedd5) !important;
+  border-color: #fdba74 !important;
+  color: #9a3412 !important;
+}
+.pill:nth-child(7), .pill:nth-child(8), .pill:nth-child(9), .pill:nth-child(10), .pill:nth-child(11) {
+  background: linear-gradient(135deg,#eff6ff,#dbeafe) !important;
+  border-color: #60a5fa !important;
+  color: #1d4ed8 !important;
+}
+.pill:nth-child(12), .pill:nth-child(13), .pill:nth-child(14), .pill:nth-child(15) {
+  background: linear-gradient(135deg,#ecfdf5,#d1fae5) !important;
+  border-color: #34d399 !important;
+  color: #047857 !important;
+}
+
+/* Make engineer card header tighter */
+.card.section > div:first-child {
+  margin-bottom: 8px !important;
+}
+.card.section h2 {
+  font-size: 24px !important;
+  line-height: 1.15 !important;
+}
+</style>
+
+
+<style id="pdf-export-fix">
+@media print {
+  body.pdf-exporting {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #e8fbf8 !important;
+  }
+  body.pdf-exporting .wrap { max-width: none !important; }
+  body.pdf-exporting .card, body.pdf-exporting header, body.pdf-exporting .tabs {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  body.pdf-exporting .section { break-inside: avoid; page-break-inside: avoid; }
+  body.pdf-exporting table { font-size: 10px !important; }
+  body.pdf-exporting .btn { display: none !important; }
+}
+</style>
+
 </head><body class="login-locked">
 
 <div id="loginScreen" class="login-screen" role="dialog" aria-modal="true" aria-label="Dashboard Login">
@@ -193,7 +269,7 @@ body.login-locked{overflow:hidden}
 </div>
 <div id="dashboardContent" style="display:none">
 
-<header class="header"><div class="headrow"><div><h1>जल गंगा जल संवर्धन अभियान 2026 - सतना एवं मैहर डैशबोर्ड</h1><div class="sub">जनपद सारांश • उपयंत्री रैंकिंग • JGSA Score • Critical कार्य • सम्पूर्ण सूची • Source: Live JGSA Dashboard + Work Monitor + Official Block Ranking</div></div><div class="badge">Developed by Hira Mani Dwivedi SRDM ZP SATNA</div><div class="date" id="updated">Updated: —</div></div></header>
+<header class="header"><div class="headrow"><div><h1>जल गंगा जल संवर्धन अभियान 2026 - सतना एवं मैहर डैशबोर्ड</h1><div class="sub">जनपद सारांश • उपयंत्री रैंकिंग • JGSA Score • Critical कार्य • सम्पूर्ण सूची • Source: Live JGSA Dashboard + Work Monitor + Official Block Ranking</div></div><div class="badge">SRDM ZP SATNA</div><div class="date" id="updated">Updated: —</div></div></header>
 <main class="wrap">
 <nav class="tabs" id="tabs"></nav>
 <div class="filters">
@@ -201,16 +277,17 @@ body.login-locked{overflow:hidden}
   <select id="janpadFilter"><option value="">All Janpad</option></select>
   <select id="engineerFilter"><option value="">All Engineer</option></select>
   <select id="statusFilter"><option value="">All Status</option><option value="ONGOING">Ongoing</option><option value="COMPLETED">Completed</option><option value="PHYSICALLY COMPLETED">Physically Completed</option></select>
-  <select id="expFilter"><option value="">All Exp %</option><option value="lt25">&lt; 25%</option><option value="25_50">25% – 50%</option><option value="50_75">50% – 75%</option><option value="75_90">75% – 90%</option><option value="ge90">≥ 90%</option></select>
+  <select id="expFilter"><option value="">All Exp %</option><option value="lt25">&lt; 30%</option><option value="25_50">30% – 50%</option><option value="50_75">50% – 75%</option><option value="75_90">75% – 90%</option><option value="ge90">≥ 90%</option></select>
   <input id="search" placeholder="Search work / engineer / GP / code">
-  <button class="btn" onclick="window.print()">Export Current View PDF</button>
+  <button class="btn" onclick="exportCurrentViewPDF()">Export Current View PDF</button>
+  <button class="btn" onclick="exportCurrentViewPPTX()">Export Current View PPTX</button>
   <button class="btn" onclick="downloadCSV()">Export CSV</button>
 </div>
 <div id="app"></div>
 </main>
 <script>
 const D = window.JGSA_LIVE_DATA || {};
-const tabs=['मुख्य डैशबोर्ड','Work Monitor','Official Block Ranking','Engineer Ranking','Needs Verification','Score Breakdown','श्रेणी Analysis','District War Room','Achievement Wall','Weekly Change Tracker','Performance DNA','Meeting Mode'];
+const tabs=['मुख्य डैशबोर्ड','Work Monitor','Official Block Ranking','Engineer Ranking','Engineer Scorecard','Shreni wise Engineer Details','Needs Verification','Score Breakdown','श्रेणी Analysis','District War Room','Achievement Wall','Weekly Change Tracker','Performance DNA','Meeting Mode'];
 const ALL_CATEGORIES=['Farm Pond','Amrit Sarovar','Dug Well Recharge','Irrigation infrastructure','Water conservation & recharge','Watershed Related Works','Repair & Maintenance (Water Structures)','Gap Filling in Plantation','Work Not Permissible in VB-GRAM-G'];
 let active=0;
 let selectedBreakdown=null;
@@ -218,6 +295,7 @@ let workMonitorPage=1;
 const fmt=n=>Number(n||0).toLocaleString('en-IN');
 const money=n=>'₹'+(Number(n||0)/100000).toFixed(2)+' लाख';
 const moneyCr=n=>'₹'+(Number(n||0)/10000000).toFixed(2)+' Cr';
+const moneySmartShreni=(n,isSingle)=>isSingle?money(n):moneyCr(n);
 const pct=n=>(Number(n||0)).toFixed(1)+'%';
 function normType(t){
   const x=String(t||'').trim();
@@ -407,15 +485,33 @@ return ranked.filter(e=>passEngineer({engineer:e.engineer}));
 }
 function fOfficialRows(){let q=currentSearch(); return (D.officialBlockRankingRows||[]).filter(r=>{let b=String(r.Block||r.block||'').toUpperCase(); let fake={block:b}; return passDistrictBlock(fake)&&matchSearch(r,q)})}
 function app(html){document.getElementById('app').innerHTML=html}
+
+function expBucketCountsForEngineer(engineerName){
+  const q=currentSearch();
+  const rows=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q)&&String(w.engineer||'')===engineerName);
+  let b30=0, b3050=0, b5075=0, b7590=0, b90=0;
+  rows.forEach(w=>{
+    const f=statusFlags(w);
+    if(!f.ongoing) return;
+    const p=Number(w.expPercent||0);
+    if(p<30) b30++;
+    else if(p<50) b3050++;
+    else if(p<75) b5075++;
+    else if(p<90) b7590++;
+    else b90++;
+  });
+  return {b30,b3050,b5075,b7590,b90};
+}
+
 function statusFlags(w){let s=String(w.status||'').trim().toUpperCase(); let phys=(s==='PHYSICALLY COMPLETED')||s.includes('PHYSICALLY COMPLETED')||s.includes('PHYCS')||s.includes('भौतिक'); let comp=!phys&&((s==='COMPLETED')||s.includes('COMPLETED')||s==='COMPLETE'||s.includes('पूर्ण')); let ongoing=(s==='ONGOING')||s.includes('ONGOING')||s.includes('प्रगतिरत')||s.includes('IN PROGRESS')||s.includes('चालू'); return {comp,phys,ongoing}}
 function calcCategory(items){let started=items.length; if(!started) return {score:0,partA:0,partB:0,avgExpPct:0,works:0,completedPhy:0,completed:0,physical:0,ongoing:0,sanction:0,booked:0}; let completed=0, physical=0, ongoing=0, completedPhy=0, sanction=0, booked=0, pctSum=0; items.forEach(w=>{let f=statusFlags(w); completed+=f.comp?1:0; physical+=f.phys?1:0; ongoing+=f.ongoing?1:0; completedPhy+=(f.comp||f.phys)?1:0; sanction+=Number(w.sanctionAmount||0); booked+=Number(w.bookedAmount||0); pctSum+=Number(w.expPercent||0)}); let partA=Math.min(5,(completedPhy/started)*5); let partB=sanction?Math.min(5,(booked/sanction)*5):Math.min(5,(pctSum/started)/100*5); return {score:+(partA+partB).toFixed(2),partA:+partA.toFixed(2),partB:+partB.toFixed(2),avgExpPct:+(pctSum/started).toFixed(2),works:started,completedPhy,completed,physical,ongoing,sanction:+sanction.toFixed(2),booked:+booked.toFixed(2)} }
 function buildCategoryBreakdown(items){let totalSanction=items.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let by={}; items.forEach(w=>{let k=normType(w.workType)||'Uncategorised'; (by[k]||(by[k]=[])).push(w)}); let out=[]; Object.entries(by).forEach(([category,rows])=>{let c=calcCategory(rows); let weight=totalSanction?(c.sanction/totalSanction)*100:(items.length?c.works/items.length*100:0); out.push({...c,category,weight:+weight.toFixed(2),weighted:+((weight/100)*c.score).toFixed(4),grade:grade(c.score)})}); return out.sort((a,b)=>b.weight-a.weight)}
 function calcEngineers(items){let groups={}; items.forEach(w=>{let e=w.engineer||'Unmapped'; (groups[e]||(groups[e]=[])).push(w)}); let out=[]; Object.entries(groups).forEach(([engineer,rows])=>{let cats=buildCategoryBreakdown(rows); let score=+(cats.reduce((a,c)=>a+c.weight/100*c.score,0)).toFixed(2); let g=grade(score); let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0); let flags=rows.map(statusFlags); let completed=flags.filter(x=>x.comp).length; let physical=flags.filter(x=>x.phys).length; let ongoing=flags.filter(x=>x.ongoing).length; let gp=new Set(rows.map(w=>w.panchayat).filter(Boolean)).size; let blocks=[...new Set(rows.map(w=>String(w.block||'').toUpperCase()).filter(Boolean))].join(', '); out.push({engineer,janpad:blocks,works:rows.length,completed,physicalCompleted:physical,ongoing,needsVerification:rows.filter(w=>w.needsVerification).length,score,grade:g,gradeText:gradeText(g),avgBookedPct:sanction?booked/sanction*100:0,sanction,booked,categories:cats,gpCount:gp})}); out.sort((a,b)=>b.score-a.score || a.needsVerification-b.needsVerification || b.works-a.works); out.forEach((x,i)=>x.rank=i+1); let byJan={}; out.forEach(x=>{let primary=String(x.janpad||'').split(',')[0].trim()||'UNKNOWN'; (byJan[primary]||(byJan[primary]=[])).push(x); x.primaryJanpad=primary}); Object.values(byJan).forEach(arr=>arr.sort((a,b)=>b.score-a.score || a.needsVerification-b.needsVerification || b.works-a.works).forEach((x,i)=>x.janpadRank=i+1)); return out}
 function calcBlocks(items){let groups={}; items.forEach(w=>{let b=String(w.block||'Unknown').toUpperCase(); (groups[b]||(groups[b]=[])).push(w)}); let out=[]; Object.entries(groups).forEach(([block,rows])=>{let cats=buildCategoryBreakdown(rows); let score=+(cats.reduce((a,c)=>a+c.weight/100*c.score,0)).toFixed(2); let g=grade(score); let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0); let flags=rows.map(statusFlags); out.push({block,works:rows.length,completed:flags.filter(x=>x.comp).length,physicalCompleted:flags.filter(x=>x.phys).length,ongoing:flags.filter(x=>x.ongoing).length,needsVerification:rows.filter(w=>w.needsVerification).length,score,grade:g,gradeText:gradeText(g),avgBookedPct:sanction?booked/sanction*100:0,sanction,booked,categories:cats,gpCount:new Set(rows.map(w=>w.panchayat).filter(Boolean)).size})}); out.sort((a,b)=>b.score-a.score); out.forEach((x,i)=>x.rank=i+1); return out}
-function render(){document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===active)); if(!works().length && active!==2) return app(noData()); [overview,workMonitor,official,engineer,needs,scoreBreakdown,category,war,achieve,weeklyTracker,dna,meeting][active]();}
+function render(){document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===active)); if(!works().length && active!==2) return app(noData()); [overview,workMonitor,official,engineer,engineerScorecard,shreniWiseEngineerDetails,needs,scoreBreakdown,category,war,achieve,weeklyTracker,dna,meeting][active]();}
 function noData(){return '<div class="empty">No data available. Run GitHub Action / local fetch once.</div>'}
-function officialSummary(){let s=summ(); let compOnly=Number(s.completedOnly ?? s.completed ?? 0); let phys=Number(s.physicalCompleted||0); let totalComp=Number(s.totalCompleted ?? s.officialTotalCompleted ?? (compOnly+phys)); return {totalWorks:Number(s.totalWorks||works().length),completed:compOnly,totalCompleted:totalComp,completedOnly:compOnly,physicalCompleted:phys,abhiyanProgress:Number(s.abhiyanProgress||0),needsVerification:Number(s.needsVerification||works().filter(w=>w.needsVerification).length),sanction:Number(s.sanction||works().reduce((a,w)=>a+Number(w.sanctionAmount||0),0)),booked:Number(s.booked||works().reduce((a,w)=>a+Number(w.bookedAmount||0),0)),bookedPct:Number(s.bookedPct||0),unmappedWorks:Number(s.unmappedWorks||0),engineers:Number(s.engineers||0)}}
-function kpis(){let s=officialSummary();return `<div class="grid"><div class="card kpi"><div class="label">Total Target Works</div><div class="val">${fmt(s.totalWorks)}</div><small>JGSA overview source</small></div><div class="card kpi"><div class="label">Total Completed</div><div class="val" style="color:#059669">${fmt(s.totalCompleted)}</div><small>Completed + Physically Completed</small></div><div class="card kpi"><div class="label">Abhiyan Progress</div><div class="val">${fmt(s.abhiyanProgress||s.totalCompleted)}</div><small>JGSA overview value</small></div><div class="card kpi"><div class="label">Total Sanction</div><div class="val" style="color:#7c3aed">${moneyCr(s.sanction)}</div><small>Official overview</small></div><div class="card kpi"><div class="label">Total Booked</div><div class="val" style="color:#0f766e">${moneyCr(s.booked)}</div><small>${pct(s.bookedPct)} booked</small></div></div>`}
+function officialSummary(){let s=summ(); let compOnly=Number(s.completedOnly ?? s.completed ?? 0); let phys=Number(s.physicalCompleted||0); let totalComp=Number(s.totalCompleted ?? s.officialTotalCompleted ?? (compOnly+phys)); return {totalWorks:Number(s.totalWorks||works().length),completed:compOnly,totalCompleted:totalComp,completedOnly:compOnly,physicalCompleted:phys,abhiyanProgress:Number(s.abhiyanProgress||s.officialAbhiyanProgress||s.physicalCompleted||0),needsVerification:Number(s.needsVerification||works().filter(w=>w.needsVerification).length),sanction:Number(s.sanction||works().reduce((a,w)=>a+Number(w.sanctionAmount||0),0)),booked:Number(s.booked||works().reduce((a,w)=>a+Number(w.bookedAmount||0),0)),bookedPct:Number(s.bookedPct||0),unmappedWorks:Number(s.unmappedWorks||0),engineers:Number(s.engineers||0)}}
+function kpis(){let s=officialSummary();return `<div class="grid"><div class="card kpi"><div class="label">Total Target Works</div><div class="val">${fmt(s.totalWorks)}</div><small>JGSA overview source</small></div><div class="card kpi"><div class="label">Total Completed</div><div class="val" style="color:#059669">${fmt(s.totalCompleted)}</div><small>Completed + Physically Completed</small></div><div class="card kpi"><div class="label">Abhiyan Progress</div><div class="val">${fmt(s.abhiyanProgress||s.physicalCompleted)}</div><small>After 19-Mar official value</small></div><div class="card kpi"><div class="label">Total Sanction</div><div class="val" style="color:#7c3aed">${moneyCr(s.sanction)}</div><small>Official overview</small></div><div class="card kpi"><div class="label">Total Booked</div><div class="val" style="color:#0f766e">${moneyCr(s.booked)}</div><small>${pct(s.bookedPct)} booked</small></div></div>`}
 function distStats(name){let rows=works().filter(w=>rowDistrict(w)===name); let flags=rows.map(statusFlags); let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0); return {name,rows,works:rows.length,completed:flags.filter(f=>f.comp).length,physical:flags.filter(f=>f.phys).length,needs:rows.filter(w=>w.needsVerification).length,sanction,booked,gps:new Set(rows.map(w=>w.panchayat).filter(Boolean)).size,bookedPct:sanction?booked/sanction*100:0}}
 function zilaCard(st){let chips=(districtGroups()[st.name]||[]).map(j=>`<span class="chip">${j}</span>`).join('');return `<div class="zilaCard"><h2>📍 जिला ${st.name==='SATNA'?'Satna':'Maihar'}</h2><button class="zilaBtn" onclick="document.getElementById('districtFilter').value='${st.name}';updateJanpadOptions();active=1;render()">${st.name} data देखें</button><div class="metricGrid"><div class="metricBox"><b>${fmt(st.works)}</b>JGSA कार्य</div><div class="metricBox criticalBox"><b>${fmt(st.needs)}</b>सत्यापन &lt;30% CC/PHYCS</div><div class="metricBox"><b>${fmt(st.completed+st.physical)}</b>पूर्ण + भौतिक पूर्ण</div><div class="metricBox"><b>${fmt(st.gps)}</b>Gram Panchayat</div><div class="metricBox"><b>${moneyCr(st.sanction)}</b>Total Sanction</div><div class="metricBox"><b>${moneyCr(st.booked)}</b>Total Booked</div><div class="metricBox"><b>${pct(st.bookedPct)}</b>Booked % Avg</div><div class="metricBox"><b>${fmt((districtGroups()[st.name]||[]).length)}</b>Janpad</div></div><div class="chipRow">${chips}</div><div class="note">${st.name==='SATNA'?'Satna में Majhgawan, Nagod, Rampur Baghelan, Satna, Unchahara शामिल हैं।':'Maihar में Amarpatan, Ramnagar, Maihar शामिल हैं।'}</div></div>`}
 function overview(){let st=distStats('SATNA'), mh=distStats('MAIHAR'); app(kpis()+`<section class="section zilaGrid">${zilaCard(st)}${zilaCard(mh)}</section><section class="section twocol"><div class="card"><h2>Critical Summary</h2><p><b>${fmt(works().filter(w=>w.needsVerification).length)}</b> Needs Verification works direct JGSA Work Monitor badge se.</p><p><b>${fmt(works().filter(w=>(w.engineer||'')==='Unmapped').length)}</b> works engineer mapping me unmapped.</p></div><div class="card formula"><h2>JGSA Formula</h2><b>Category Weight</b> = Category Sanction / Total Sanction<br><b>Part A</b> = (Completed + Physically Completed) / Started × 5<br><b>Part B</b> = Booked / Sanction × 5<br><b>Composite</b> = Σ(Weight × Category Score)</div></section>`)}
@@ -441,6 +537,170 @@ function official(){
 function rankTable(rows){return table(['Rank','Name','Score','Grade','Works','Panchayat','Needs Verification','Booked %','Total Sanction','Total Booked'],rows.map(r=>[r.rank,r.block||r.engineer,`<b class="score">${r.score}/10</b>`,`<span class="${gradeClass(r.grade)}">${r.grade} — ${r.gradeText}</span>`,fmt(r.works),fmt(r.gpCount||0),fmt(r.needsVerification),pct(r.avgBookedPct),money(r.sanction),money(r.booked)]))}
 function engineer(){let rows=fengs(); app(`<h2>Engineer Ranking — JGSA Formula Based (${fmt(rows.length)})</h2>`+engineerTable(rows))}
 function engineerTable(rows){return table(['#','उपयंत्री','Janpad Rank','Score','GP','कार्य','पूर्ण','भौतिक पूर्ण','चालू','Verification','Completion','Sanction','Booked','Remaining Exp','Financial','Action'],rows.map((e,i)=>{let compPct=e.works?((e.completed+e.physicalCompleted)/e.works*100):0; let fin=e.sanction?e.booked/e.sanction*100:0; let rem=Math.max(0,(Number(e.sanction||0)-Number(e.booked||0))); return [`<span class="rankMedal">${i<3?'🏅 ':''}${i+1}</span>`,`<b>${e.engineer}</b><span class="subline">${e.primaryJanpad||e.janpad} • अंतर्गत GP: ${fmt(e.gpCount||0)}</span>`,`<b>Rank ${fmt(e.janpadRank||'-')}</b><span class="subline">in ${e.primaryJanpad||''}</span>`,`<b>${e.score}</b>`,fmt(e.gpCount||0),fmt(e.works),fmt(e.completed),fmt(e.physicalCompleted),fmt(e.ongoing),fmt(e.needsVerification),`<div class="progressCell"><div class="bar"><span style="width:${Math.min(100,compPct)}%"></span></div><b>${pct(compPct)}</b></div>`,money(e.sanction),money(e.booked),money(rem),`<div class="progressCell"><div class="bar"><span style="width:${Math.min(100,fin)}%"></span></div><b>${pct(fin)}</b></div>`,`<div class="actions"><button class="miniBtn" onclick="openGPList('${escapeAttr(e.engineer)}')">GP सूची</button><button class="miniBtn" onclick="openBreakup('${escapeAttr(e.engineer)}')">Breakup</button></div>`] }))}
+function cap5(n){return Math.max(0,Math.min(5,Number(n||0)));}
+function calcPartAFromCounts(completed,physical,works){return cap5(works?((Number(completed||0)+Number(physical||0))/Number(works||0))*5:0);}
+function calcPartBFromMoney(booked,sanction){return cap5(sanction?(Number(booked||0)/Number(sanction||0))*5:0);}
+function catForEngineer(e,cat){return (e.categories||[]).find(c=>normType(c.category)===cat) || {category:cat,score:0,works:0,completed:0,physical:0,ongoing:0,completedPhy:0,sanction:0,booked:0,partA:0,partB:0,weight:0,avgExpPct:0};}
+function engineerScorecard(){
+  let rows=fengs();
+  const top=rows.slice(0,3);
+  const podium=top.length?`<div class="three">${top.map((e,i)=>`<div class="card" style="border-top:5px solid ${i===0?'#10b981':i===1?'#3b82f6':'#f59e0b'}"><h2>${e.engineer}</h2><div class="val" style="font-size:32px;font-weight:950;color:#0f766e">${e.score}/10</div><span class="subline">${e.primaryJanpad||e.janpad} • Janpad Rank ${fmt(e.janpadRank||'-')} • Works ${fmt(e.works)}</span></div>`).join('')}</div>`:'';
+  const headers=['#','उपयंत्री','Janpad','Total','GP','Works',...ALL_CATEGORIES];
+  const body=rows.map((e,i)=>{
+    const base=[`<span class="rankMedal">${i<3?'🏅 ':''}${i+1}</span>`,`<b>${e.engineer}</b><span class="subline">Janpad Rank ${fmt(e.janpadRank||'-')}</span>`,e.primaryJanpad||e.janpad,`<b class="score">${e.score}/10</b>`,fmt(e.gpCount||0),fmt(e.works)];
+    const cells=ALL_CATEGORIES.map((cat,ci)=>{
+      const c=catForEngineer(e,cat);
+      const jsE=escapeAttr(e.engineer), jsC=escapeAttr(cat);
+      if(!c.works) return `<span class="muted">—</span>`;
+      return `<div class="catClickable" onclick="openEngineerCategory('${jsE}','${jsC}')"><b><span class="dot c${(ci%8)+1}"></span>${Number(c.score||0).toFixed(2)}/10</b><span class="subline">Part A ${Number(c.partA||0).toFixed(2)} • Part B ${Number(c.partB||0).toFixed(2)}</span><span class="subline">कार्य ${fmt(c.works)} • पूर्ण ${fmt((c.completed||0)+(c.physical||0))} • चालू ${fmt(c.ongoing||0)}</span></div>`;
+    });
+    return [...base,...cells];
+  });
+  app(`<h2>Engineer Category Scorecard</h2><p class="muted">Official block ranking जैसा view: किसी भी engineer के category cell पर click करने से उसी engineer की उसी category की detailed work list खुलेगी.</p>${podium}<div class="section">${table(headers,body)}</div>`);
+}
+
+function shreniDetailRows(){
+  const q=currentSearch();
+  const base=works().filter(w=>passDistrictBlock(w)&&passEngineer(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q));
+  const groups={};
+  const engineers={};
+  base.forEach(w=>{
+    const engineer=String(w.engineer||'Unmapped');
+    engineers[engineer]||(engineers[engineer]={engineer,janpads:new Set(),gps:new Set()});
+    engineers[engineer].janpads.add(String(w.block||'').toUpperCase());
+    if(w.panchayat) engineers[engineer].gps.add(String(w.panchayat));
+    const category=normType(w.workType)||'Uncategorised';
+    const key=engineer+'||'+category;
+    if(!groups[key]) groups[key]={engineer,category,janpads:new Set(),gps:new Set(),works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0};
+    const g=groups[key], f=statusFlags(w);
+    g.janpads.add(String(w.block||'').toUpperCase());
+    if(w.panchayat) g.gps.add(String(w.panchayat));
+    g.works++;
+    g.completed+=f.comp?1:0;
+    g.physical+=f.phys?1:0;
+    g.ongoing+=f.ongoing?1:0;
+    g.needs+=w.needsVerification?1:0;
+    g.sanction+=Number(w.sanctionAmount||0);
+    g.booked+=Number(w.bookedAmount||0);
+    g.remaining+=remainingExp(w);
+  });
+
+  // हर engineer के लिए हर fixed JGSA category दिखानी है — चाहे works 0 हों.
+  // इससे Ashish Tiwari जैसे engineer के लिए Repair & Maintenance etc. zero rows भी दिखेंगी.
+  const rows=[];
+  Object.values(engineers).forEach(meta=>{
+    ALL_CATEGORIES.forEach(category=>{
+      const key=meta.engineer+'||'+category;
+      const g=groups[key] || {engineer:meta.engineer,category,janpads:new Set(meta.janpads),gps:new Set(),works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0};
+      g.partA=calcPartAFromCounts(g.completed,g.physical,g.works);
+      g.partB=calcPartBFromMoney(g.booked,g.sanction);
+      g.totalMarks=+(g.partA+g.partB).toFixed(2);
+      g.bookedPct=g.sanction?g.booked/g.sanction*100:0;
+      const jset=(g.janpads&&g.janpads.size)?g.janpads:meta.janpads;
+      g.janpad=[...jset].join(', ');
+      g.gpCount=(g.gps&&g.gps.size)?g.gps.size:0;
+      rows.push(g);
+    });
+  });
+  return rows.sort((a,b)=>String(a.engineer).localeCompare(String(b.engineer),'hi') || ALL_CATEGORIES.indexOf(a.category)-ALL_CATEGORIES.indexOf(b.category));
+}
+function shreniWiseEngineerDetails(){
+  const rows=shreniDetailRows();
+  const totalWorks=rows.reduce((a,r)=>a+r.works,0), totalSanction=rows.reduce((a,r)=>a+r.sanction,0), totalBooked=rows.reduce((a,r)=>a+r.booked,0), totalRemaining=rows.reduce((a,r)=>a+r.remaining,0);
+  const grouped={};
+  rows.forEach(r=>{ (grouped[r.engineer]||(grouped[r.engineer]=[])).push(r); });
+
+  const q=currentSearch();
+  const rankBase=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q));
+  const engineerMeta={};
+  calcEngineers(rankBase).forEach(e=>{ engineerMeta[e.engineer]=e; });
+
+  const selectedEngineers=Object.keys(grouped);
+  const selectedEngineerLabel = selectedEngineers.length===1 ? selectedEngineers[0] : 'All';
+
+  const engineerCards=Object.entries(grouped).map(([engineer,items],idx)=>{
+    const ew=items.reduce((a,r)=>a+r.works,0), es=items.reduce((a,r)=>a+r.sanction,0), eb=items.reduce((a,r)=>a+r.booked,0), er=items.reduce((a,r)=>a+r.remaining,0);
+    const ej=[...new Set(items.map(r=>r.janpad).filter(Boolean))].join(', ');
+    const meta=engineerMeta[engineer] || {};
+    const scoreVal = (meta.score!==undefined && meta.score!==null) ? Number(meta.score).toFixed(2) : (es?((eb/es)*5).toFixed(2):'0.00');
+    const janpadRank = meta.janpadRank || '-';
+    const completedVal = meta.completed ?? items.reduce((a,r)=>a+r.completed,0);
+    const physicalVal = meta.physicalCompleted ?? items.reduce((a,r)=>a+r.physical,0);
+    const ongoingVal = meta.ongoing ?? items.reduce((a,r)=>a+r.ongoing,0);
+    const verificationVal = meta.needsVerification ?? items.reduce((a,r)=>a+r.needs,0);
+    const expB = expBucketCountsForEngineer(engineer);
+    const body=items.map((r,i)=>[
+      i+1,
+      `<b><span class="dot c${(ALL_CATEGORIES.indexOf(r.category)%8)+1}"></span>${r.category}</b>`,
+      fmt(r.gpCount),
+      fmt(r.works),
+      fmt(r.completed),
+      fmt(r.physical),
+      fmt(r.ongoing),
+      fmt(r.needs),
+      money(r.sanction),
+      money(r.booked),
+      money(r.remaining),
+      pct(r.bookedPct),
+      `<b style="color:#2563eb">${r.partA.toFixed(2)}</b>`,
+      `<b style="color:#16a34a">${r.partB.toFixed(2)}</b>`,
+      `<b class="score">${r.totalMarks.toFixed(2)}/10</b>`,
+      `<button class="miniBtn" onclick="openEngineerCategory('${escapeAttr(r.engineer)}','${escapeAttr(r.category)}')">Details</button>`
+    ]);
+    return `<div class="card section" style="overflow:hidden">
+      <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px">
+        <div>
+          <h2 style="margin:0">${engineer}</h2>
+          <span class="subline">${ej||'All Janpad'} • Janpad Rank ${fmt(janpadRank)} • Score ${scoreVal}/10</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span class="pill">Score ${scoreVal}/10</span>
+          <span class="pill">Janpad Rank ${fmt(janpadRank)}</span>
+          <span class="pill">Completed ${fmt(completedVal)}</span>
+          <span class="pill">Physically Completed ${fmt(physicalVal)}</span>
+          <span class="pill">Ongoing ${fmt(ongoingVal)}</span>
+          <span class="pill">Verification ${fmt(verificationVal)}</span>
+          <span class="pill">&lt;30% Ong. Works ${fmt(expB.b30)}</span>
+          <span class="pill">30–50% Ong. Works ${fmt(expB.b3050)}</span>
+          <span class="pill">50–75% Ong. Works ${fmt(expB.b5075)}</span>
+          <span class="pill">75–90% Ong. Works ${fmt(expB.b7590)}</span>
+          <span class="pill">≥90% Ong. Works ${fmt(expB.b90)}</span>
+          <span class="pill">Works ${fmt(ew)}</span>
+          <span class="pill">Sanction ${money(es)}</span>
+          <span class="pill">Booked ${money(eb)}</span>
+          <span class="pill">Remaining ${money(er)}</span>
+        </div>
+      </div>
+      ${table(['#','Work Type / Shreni','GP','Works','Completed','Physically Completed','Ongoing','Verification','Sanction','Booked','Remaining Exp','Booked %','Part A','Part B','Total Marks','Action'],body)}
+    </div>`;
+  }).join('');
+
+  const amountFmt = selectedEngineers.length===1 ? money : moneyCr;
+  const topCards = `<div class="grid section">
+    <div class="card kpi"><div class="label">Engineer</div><div class="val">${selectedEngineerLabel}</div><small>${selectedEngineers.length===1?'Selected engineer':'All engineers'}</small></div>
+    <div class="card kpi"><div class="label">Total Works</div><div class="val">${fmt(totalWorks)}</div><small>Filtered works</small></div>
+    <div class="card kpi"><div class="label">Sanction</div><div class="val" style="color:#7c3aed">${amountFmt(totalSanction)}</div><small>Total sanction</small></div>
+    <div class="card kpi"><div class="label">Booked</div><div class="val" style="color:#0f766e">${amountFmt(totalBooked)}</div><small>${pct(totalSanction?totalBooked/totalSanction*100:0)} booked</small></div>
+    <div class="card kpi"><div class="label">Remaining Exp</div><div class="val" style="color:#dc2626">${amountFmt(totalRemaining)}</div><small>Total remaining</small></div>
+  </div>`;
+  app(`<h2>Shreni wise Engineer Details</h2><p class="muted">Engineer-wise card view: engineer का नाम एक बार दिखेगा और नीचे सभी work categories की table रहेगी, zero work categories सहित.</p>${topCards}${engineerCards}`);
+}
+function openEngineerCategory(name,category){
+  const q=currentSearch();
+  let rows=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q)&&String(w.engineer||'')===name&&normType(w.workType)===category);
+  rows=rows.sort((a,b)=>String(a.block||'').localeCompare(String(b.block||''))||String(a.panchayat||'').localeCompare(String(b.panchayat||''))||String(workYear(b)).localeCompare(String(workYear(a))));
+  hydrateFinYearsForRows(rows,()=>openEngineerCategory(name,category));
+  const flags=rows.map(statusFlags);
+  const sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0), booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0), rem=rows.reduce((a,w)=>a+remainingExp(w),0);
+  const completedTotal=flags.filter(f=>f.comp).length;
+  const physicalTotal=flags.filter(f=>f.phys).length;
+  const partATotal=calcPartAFromCounts(completedTotal,physicalTotal,rows.length);
+  const partBTotal=calcPartBFromMoney(booked,sanction);
+  const totalMarks=partATotal+partBTotal;
+  const bygp={}; rows.forEach(w=>{let k=(w.block||'')+'||'+(w.panchayat||''); bygp[k]||(bygp[k]={janpad:w.block,gp:w.panchayat,works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0}); let g=bygp[k], f=statusFlags(w); g.works++; g.completed+=f.comp?1:0; g.physical+=f.phys?1:0; g.ongoing+=f.ongoing?1:0; g.needs+=w.needsVerification?1:0; g.sanction+=Number(w.sanctionAmount||0); g.booked+=Number(w.bookedAmount||0); g.remaining+=remainingExp(w); });
+  const gpRows=Object.values(bygp).map(g=>{g.partA=calcPartAFromCounts(g.completed,g.physical,g.works); g.partB=calcPartBFromMoney(g.booked,g.sanction); g.totalMarks=g.partA+g.partB; return g;}).sort((a,b)=>String(a.janpad).localeCompare(String(b.janpad))||String(a.gp).localeCompare(String(b.gp)));
+  app(`<button class="btn" onclick="engineerScorecard()">← Engineer Scorecard</button><h2>${category} — ${name}</h2><div class="section grid"><div class="card kpi"><div class="label">Total Works</div><div class="val">${fmt(rows.length)}</div><small>${category}</small></div><div class="card kpi"><div class="label">Completed + Physical</div><div class="val" style="color:#059669">${fmt(completedTotal+physicalTotal)}</div><small>Completed status</small></div><div class="card kpi"><div class="label">Ongoing</div><div class="val">${fmt(flags.filter(f=>f.ongoing).length)}</div><small>Running works</small></div><div class="card kpi"><div class="label">Sanction</div><div class="val" style="color:#7c3aed">${moneyCr(sanction)}</div><small>Total sanction</small></div><div class="card kpi"><div class="label">Booked</div><div class="val" style="color:#0f766e">${moneyCr(booked)}</div><small>${pct(sanction?booked/sanction*100:0)} booked</small></div><div class="card kpi"><div class="label">Remaining Exp</div><div class="val" style="color:#dc2626">${moneyCr(rem)}</div><small>Total remaining</small></div><div class="card kpi"><div class="label">Part A Marks</div><div class="val" style="color:#2563eb">${partATotal.toFixed(2)}</div><small>Completion marks /5</small></div><div class="card kpi"><div class="label">Part B Marks</div><div class="val" style="color:#16a34a">${partBTotal.toFixed(2)}</div><small>Booked marks /5</small></div><div class="card kpi"><div class="label">Total Marks</div><div class="val" style="color:#92400e">${totalMarks.toFixed(2)}</div><small>Part A + Part B /10</small></div></div><div class="section card"><h2>GP-wise Summary</h2>${table(['#','Janpad','GP','Works','Completed','Physically Completed','Ongoing','Verification','Sanction','Booked','Remaining Exp','Booked %','Part A','Part B','Total Marks'], gpRows.map((g,i)=>[i+1,g.janpad,g.gp,fmt(g.works),fmt(g.completed),fmt(g.physical),fmt(g.ongoing),fmt(g.needs),money(g.sanction),money(g.booked),money(g.remaining),pct(g.sanction?g.booked/g.sanction*100:0),g.partA.toFixed(2),g.partB.toFixed(2),g.totalMarks.toFixed(2)]))}</div><h2>Detailed Work List</h2>`+table(['#','FY','Work Code','Work Name','Janpad','GP','Status','Sanction','Booked','Remaining Exp','Booked %','Verification'], rows.map((w,i)=>[i+1,workYear(w),w.workCode,w.workName,w.block,w.panchayat,w.status,money(w.sanctionAmount),money(w.bookedAmount),money(remainingExp(w)),pct(w.expPercent),w.needsVerification?'<span class="pill gD">Needs Verification</span>':''])));
+}
 function escapeAttr(s){return String(s||'').replaceAll('\\','\\\\').replaceAll("'","\\'").replaceAll('\n',' ')}
 function openGPList(name){
   // Row-level GP calculation. Engineer columns are calculated only from this engineer's rows.
@@ -459,7 +719,7 @@ function openGPList(name){
     allRows.filter(w=>String(w.panchayat||'')===g.gp).forEach(w=>{let f=statusFlags(w); g.totalWorks++; g.totalOngoing+=f.ongoing?1:0; g.totalCompleted+=f.comp?1:0; g.totalPhysical+=f.phys?1:0;});
   });
   app(`<button class="btn" onclick="engineer()">← Engineer Ranking</button><h2>GP सूची — ${name}</h2><p class="muted">Engineer columns sirf selected engineer ke rows se hain. JGSA GP Total columns Work Monitor ke same GP name ke total rows dikhate hain.</p>`+table(['#','Janpad','GP','Engineer Works','पूर्ण','भौतिक पूर्ण','चालू','Needs Verification','Sanction','Booked','Booked %','JGSA GP Total Works','JGSA GP Total चालू'],Object.values(gps).sort((a,b)=>b.works-a.works).map((g,i)=>[i+1,[...g.janpads].join(', '),g.gp,fmt(g.works),fmt(g.completed),fmt(g.physical),fmt(g.ongoing),fmt(g.needs),money(g.sanction),money(g.booked),pct(g.sanction?g.booked/g.sanction*100:0),fmt(g.totalWorks),fmt(g.totalOngoing)])))}
-function openBreakup(name){selectedBreakdown={type:'engineer',name}; active=5; document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===active)); scoreBreakdown();}
+function openBreakup(name){selectedBreakdown={type:'engineer',name}; active=7; document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===active)); scoreBreakdown();}
 function needs(){let rows=fworks().filter(w=>w.needsVerification); app(`<h2>Needs Verification (${fmt(rows.length)})</h2>`+table(['#','Work Code','Work Name','Engineer','District','Janpad','GP','Type','Status','Booked %'],rows.map((w,i)=>[i+1,w.workCode,w.workName,w.engineer,rowDistrict(w),w.block,w.panchayat,w.workType,w.status,pct(w.expPercent)])))}
 function scoreBreakdown(){let title='संपूर्ण क्षेत्र — Score Breakup', rows=fworks(); if(selectedBreakdown&&selectedBreakdown.type==='engineer'){title=selectedBreakdown.name+' — Score Breakup'; rows=fworks().filter(w=>(w.engineer||'')===selectedBreakdown.name)} let cats=buildCategoryBreakdown(rows); let score=+(cats.reduce((a,c)=>a+c.weight/100*c.score,0)).toFixed(2); app(`<div class="card"><div class="breakTitle"><div><h2>${title}</h2><div class="muted">कुल अंक: <b>${score} /10</b> • Target base: selected area/work set</div></div><div class="smallFilters"><input id="breakSearch" placeholder="नाम खोजें" oninput="filterBreakRows()"><select id="breakGrade" onchange="filterBreakRows()"><option value="">सभी ग्रेड</option><option>A</option><option>B</option><option>C</option><option>D</option></select><button class="btn dark" onclick="window.print()">🖨️ Print</button></div></div></div><div id="breakTable" class="section">${breakTable(cats)}</div>`)}
 function breakTable(cats){return table(['#','Category','Sanction Cost (₹ Cr)','Weightage','Completion Marks','Running Booking Marks','Total','Weighted Marks'],cats.map((c,i)=>[i+1,`<div class="categoryName"><b><span class="dot c${(i%8)+1}"></span>${c.category}</b><span>कार्य ${fmt(c.works)} • चालू ${fmt(c.ongoing)} • भौतिक पूर्ण ${fmt(c.physical)} • पूर्ण ${fmt(c.completed)} • सत्यापन ${fmt(fworks().filter(w=>normType(w.workType)===c.category&&w.needsVerification).length)}</span></div>`,(c.sanction/10000000).toFixed(2),pct(c.weight),c.partA.toFixed(2),c.partB.toFixed(2),`<b>${c.score.toFixed(2)}</b>`,`<b class="score">${c.weighted.toFixed(4)}</b>`]))}
@@ -529,8 +789,8 @@ function dna(){
     if(ongF==='high' && e.ongoing<=20) return false;
     if(ongF==='zero' && e.ongoing!==0) return false;
     if(remF==='50plus' && rem<5000000) return false;
-    if(remF==='25to50' && (rem<2500000 || rem>=5000000)) return false;
-    if(remF==='below25' && rem>=2500000) return false;
+    if(remF==='30to50' && (rem<2500000 || rem>=5000000)) return false;
+    if(remF==='below30' && rem>=2500000) return false;
     if(viewF==='risk' && !(e.needsVerification>0 || rem>=5000000 || e.ongoing>20 || e.score<5)) return false;
     return true;
   });
@@ -548,7 +808,7 @@ function dna(){
     <select onchange="setDNAFilter('score',this.value)"><option value="">All Score</option><option value="8plus" ${scoreF==='8plus'?'selected':''}>Score 8+</option><option value="6to8" ${scoreF==='6to8'?'selected':''}>Score 6-8</option><option value="4to6" ${scoreF==='4to6'?'selected':''}>Score 4-6</option><option value="below4" ${scoreF==='below4'?'selected':''}>Below 4</option></select>
     <select onchange="setDNAFilter('verification',this.value)"><option value="">All Verification</option><option value="has" ${verF==='has'?'selected':''}>Verification Only</option><option value="zero" ${verF==='zero'?'selected':''}>Zero Verification</option></select>
     <select onchange="setDNAFilter('ongoing',this.value)"><option value="">All Ongoing</option><option value="high" ${ongF==='high'?'selected':''}>High Ongoing &gt;20</option><option value="zero" ${ongF==='zero'?'selected':''}>Zero Ongoing</option></select>
-    <select onchange="setDNAFilter('remaining',this.value)"><option value="">All Remaining Exp</option><option value="50plus" ${remF==='50plus'?'selected':''}>₹50 लाख+</option><option value="25to50" ${remF==='25to50'?'selected':''}>₹25-50 लाख</option><option value="below25" ${remF==='below25'?'selected':''}>Below ₹25 लाख</option></select>
+    <select onchange="setDNAFilter('remaining',this.value)"><option value="">All Remaining Exp</option><option value="50plus" ${remF==='50plus'?'selected':''}>₹50 लाख+</option><option value="30to50" ${remF==='30to50'?'selected':''}>₹30-50 लाख</option><option value="below30" ${remF==='below30'?'selected':''}>Below ₹25 लाख</option></select>
     <select onchange="setDNAFilter('type',this.value)"><option value="">All Work Types</option>${typeOpts}</select>
     <select onchange="setDNAFilter('sort',this.value)"><option value="scoreDesc" ${sortF==='scoreDesc'?'selected':''}>Sort: Score High-Low</option><option value="scoreAsc" ${sortF==='scoreAsc'?'selected':''}>Score Low-High</option><option value="verDesc" ${sortF==='verDesc'?'selected':''}>Verification High-Low</option><option value="remDesc" ${sortF==='remDesc'?'selected':''}>Remaining Exp High-Low</option><option value="ongoingDesc" ${sortF==='ongoingDesc'?'selected':''}>Ongoing High-Low</option><option value="worksDesc" ${sortF==='worksDesc'?'selected':''}>Works High-Low</option></select>
     <select onchange="setDNAFilter('view',this.value)"><option value="" ${!viewF?'selected':''}>All Engineers</option><option value="top10" ${viewF==='top10'?'selected':''}>Top 10</option><option value="bottom10" ${viewF==='bottom10'?'selected':''}>Bottom 10</option><option value="risk" ${viewF==='risk'?'selected':''}>Risk Filter</option></select>
@@ -621,6 +881,123 @@ function meeting(){
   <div class="card section"><h2>Meeting Focus</h2><p>Needs Verification: <b>${fmt(totalVer)}</b></p><p>Unmapped Engineer Works: <b>${fmt(fworks().filter(w=>(w.engineer||'')==='Unmapped').length)}</b></p><p>Focus: Bottom 10 engineers + highest verification Janpads first.</p></div>`)
 }
 function table(headers, rows){return `<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c??''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+
+
+
+
+
+
+
+
+function exportCurrentViewPDF(){
+  document.body.classList.add('pdf-exporting');
+  setTimeout(()=>{ window.print(); setTimeout(()=>document.body.classList.remove('pdf-exporting'),800); },100);
+}
+
+
+async function loadExternalScriptOnce(globalName, urls){
+  if(window[globalName]) return window[globalName];
+  for(const url of urls){
+    try{
+      await new Promise((resolve,reject)=>{
+        const s=document.createElement('script');
+        s.src=url; s.async=true;
+        s.onload=resolve; s.onerror=reject;
+        document.head.appendChild(s);
+        setTimeout(()=>reject(new Error(globalName+' load timeout')),20000);
+      });
+      if(window[globalName]) return window[globalName];
+    }catch(e){}
+  }
+  throw new Error(globalName+' library load failed. Internet/CDN access required.');
+}
+async function ensurePptxGen(){
+  return await loadExternalScriptOnce('PptxGenJS', [
+    'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',
+    'https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundle.js'
+  ]);
+}
+async function ensureHtml2Canvas(){
+  return await loadExternalScriptOnce('html2canvas', [
+    'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+    'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js'
+  ]);
+}
+async function exportCurrentViewPPTX(){
+  try{
+    const PptxGenJS = await ensurePptxGen();
+    const html2canvas = await ensureHtml2Canvas();
+
+    const ppt = new PptxGenJS();
+    ppt.layout = 'LAYOUT_WIDE';
+    ppt.author = 'SRDM ZP SATNA';
+    ppt.company = 'SRDM ZP SATNA';
+    ppt.subject = 'JGSA Engineer-wise Shreni Details';
+    ppt.title = 'Shreni wise Engineer Details';
+    ppt.lang = 'hi-IN';
+    ppt.theme = { headFontFace:'Arial', bodyFontFace:'Arial', lang:'hi-IN' };
+    ppt.defineLayout({ name:'CUSTOM_WIDE', width:13.333, height:7.5 });
+    ppt.layout = 'CUSTOM_WIDE';
+
+    const slideW=13.333, slideH=7.5, margin=0.18;
+    let cards = Array.from(document.querySelectorAll('#app .card.section'));
+    // In Shreni tab, each engineer card is .card.section and contains a table.
+    cards = cards.filter(c => c.querySelector('table') && c.innerText.trim().length>50);
+    if(!cards.length){
+      cards = [document.getElementById('app') || document.body];
+    }
+
+    const oldScrollX=window.scrollX, oldScrollY=window.scrollY;
+    const oldTransforms = [];
+    for(const card of cards){
+      oldTransforms.push([card, card.style.transform, card.style.transformOrigin]);
+      card.style.transform = 'none';
+      card.style.transformOrigin = 'top left';
+    }
+
+    for(let i=0;i<cards.length;i++){
+      const card = cards[i];
+      card.scrollIntoView({block:'start'});
+      await new Promise(r=>setTimeout(r,120));
+
+      const canvas = await html2canvas(card, {
+        backgroundColor: '#ffffff',
+        scale: 1.5,
+        useCORS: true,
+        allowTaint: true,
+        logging: false
+      });
+      const img = canvas.toDataURL('image/png');
+      const slide = ppt.addSlide();
+      slide.background = { color:'F8FBFF' };
+
+      // Header strip
+      slide.addShape(ppt.ShapeType.rect,{x:0,y:0,w:slideW,h:0.45,fill:{color:'0B5F72'},line:{color:'0B5F72'}});
+      slide.addText('जल गंगा जल संवर्धन अभियान 2026 — Shreni wise Engineer Details',{x:0.35,y:0.12,w:8.8,h:0.18,fontSize:11,bold:true,color:'FFFFFF',margin:0,fit:'shrink'});
+      slide.addText('SRDM ZP SATNA',{x:10.65,y:0.13,w:2.3,h:0.18,fontSize:10,bold:true,color:'FFFFFF',align:'right',margin:0});
+
+      const usableW=slideW-(margin*2), usableH=slideH-0.72;
+      const ratio=canvas.width/canvas.height;
+      let w=usableW, h=usableW/ratio;
+      if(h>usableH){ h=usableH; w=h*ratio; }
+      const x=(slideW-w)/2, y=0.56+(usableH-h)/2;
+      slide.addImage({data:img,x,y,w,h});
+      slide.addText(`Page ${i+1}/${cards.length}`,{x:11.55,y:7.22,w:1.25,h:0.12,fontSize:6.5,color:'64748B',align:'right',margin:0});
+    }
+
+    oldTransforms.forEach(([card,tf,to])=>{card.style.transform=tf; card.style.transformOrigin=to;});
+    window.scrollTo(oldScrollX,oldScrollY);
+
+    const selected = (document.getElementById('engineerFilter')?.selectedOptions?.[0]?.text || 'All_Engineers').replace(/\s+/g,'_');
+    const fname = ('Shreni_wise_Engineer_Details_'+selected+'_'+(D.date||'current'))
+      .replace(/[^A-Za-z0-9_-]+/g,'_') + '.pptx';
+    await ppt.writeFile({ fileName: fname });
+  }catch(err){
+    console.error(err);
+    alert('PPTX export failed: '+(err && err.message ? err.message : err));
+  }
+}
+
 function downloadCSV(){let rows=fworks(); if(!rows.length)return; let keys=['district','workCode','workName','block','panchayat','engineer','workType','status','needsVerification','sanctionAmount','bookedAmount','expPercent']; let csv=[keys.join(',')].concat(rows.map(r=>keys.map(k=>{let val=k==='district'?rowDistrict(r):(r[k]??''); return '"'+String(val).replaceAll('"','""')+'"'}).join(','))).join('\n'); let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='jgsa_current_view.csv'; a.click();}
 init();
 </script>

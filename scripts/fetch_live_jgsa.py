@@ -6,6 +6,32 @@ from bs4 import BeautifulSoup
 
 BASE = 'https://jgsa.nregsmp.org'
 BLOCKS = ['AMARPATAN','MAIHAR','MAJHGAWAN','NAGOD','RAMNAGAR','RAMPUR BAGHELAN','SATNA','UNCHAHARA']
+
+# Business rule: Gap Filling in Plantation works are valid only up to FY 2021-2022.
+# Any Gap Filling in Plantation work from FY 2022-2023 onward is excluded from dashboard data.
+GAP_FILLING_MAX_FY_START = 2021
+
+def fy_start_year(fin_year):
+    m = re.search(r'(20\d{2})\s*-\s*(20\d{2})', str(fin_year or ''))
+    return int(m.group(1)) if m else None
+
+def is_gap_filling_after_allowed_fy(work):
+    wt = norm(work.get('workType') or '')
+    if 'GAP FILLING' not in wt or 'PLANTATION' not in wt:
+        return False
+    y = fy_start_year(work.get('finYear'))
+    # If the FY is missing/unparseable, keep it rather than dropping uncertain legacy data.
+    return y is not None and y > GAP_FILLING_MAX_FY_START
+
+def filter_gap_filling_after_allowed_fy(works):
+    kept, excluded = [], []
+    for w in works:
+        if is_gap_filling_after_allowed_fy(w):
+            excluded.append(w)
+        else:
+            kept.append(w)
+    return kept, excluded
+
 DISTRICT_GROUPS = {
     'Satna': {'MAJHGAWAN','NAGOD','RAMPUR BAGHELAN','SATNA','UNCHAHARA'},
     'Maihar': {'AMARPATAN','RAMNAGAR','MAIHAR'}
@@ -991,13 +1017,16 @@ def validate_before_write(data):
     total = len(data.get('works', []))
     if not official_rows_valid(data.get('officialBlockRankingRows') or data.get('officialBlockRanking') or []):
         raise RuntimeError('Official Block Ranking rows are empty/invalid; refusing to overwrite dashboard with blank ranking table.')
-    if total < 5000:
-        raise RuntimeError(f'Fetched only {total} works; refusing to overwrite dashboard data. Check Work Monitor parsing/portal availability.')
+    if total < 4000:
+        raise RuntimeError(f'Fetched only {total} works after Gap Filling FY filter; refusing to overwrite dashboard data. Check Work Monitor parsing/portal availability.')
     return True
 
 def main():
     engmap=load_eng_map(ENG)
     works, work_urls=fetch_work_monitor()
+    works_before_gap_filter = len(works)
+    works, excluded_gap_filling_after_fy = filter_gap_filling_after_allowed_fy(works)
+    print('gap filling filter: excluded FY 2022-2023 onward', len(excluded_gap_filling_after_fy), 'kept', len(works), 'from', works_before_gap_filter)
     # map engineer exact names, including अति/अति0 suffixes
     unmapped=0
     for w in works:
@@ -1061,7 +1090,7 @@ def main():
         if summary.get('sanction') and summary.get('booked'):
             summary['bookedPct'] = round((summary['booked']/summary['sanction'])*100,2)
     if not summary.get('abhiyanProgress'):
-        summary['abhiyanProgress']=summary.get('totalCompleted', comp+phy)
+        summary['abhiyanProgress']=summary.get('physicalCompleted', phy)
     data={'generatedAt':datetime.datetime.utcnow().isoformat()+'Z','date':DATE,'district':DISTRICT,
           'sourceUrls':{'main':overviewUrl, 'officialBlockRanking':rankingUrl, 'weeklyCurrentOfficialBlockRanking':rankingUrl, 'weeklyPreviousOfficialBlockRanking':previousRankingUrl, 'workMonitorByBlock':work_urls},
           'summary':summary,
@@ -1078,7 +1107,7 @@ def main():
           'weeklyPreviousOfficialBlockRanking':previousOfficialRows,
           'weeklyPreviousRankingRows':previousOfficialRows,
           'gradeLegend':{'A':'अच्छा Performance','B':'Progressing','C':'Progress Needed','D':'Critical / Poor Performance'},
-          'notes':['Work data is fetched block-wise to avoid the 2000 row All-Janpad limit.','Engineer mapping comes only from engname.xlsx. JGSA work values come from live JGSA pages.']}
+          'notes':['Work data is fetched block-wise to avoid the 2000 row All-Janpad limit.','Gap Filling in Plantation works after FY 2021-2022 are excluded as per dashboard rule.','Engineer mapping comes only from engname.xlsx. JGSA work values come from live JGSA pages.']}
     validate_before_write(data)
     js='window.JGSA_LIVE_DATA = '+json.dumps(data, ensure_ascii=False, indent=2)+';\n'
     with open(OUT,'w',encoding='utf-8') as f: f.write(js)
