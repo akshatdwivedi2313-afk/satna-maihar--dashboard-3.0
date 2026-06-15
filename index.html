@@ -247,6 +247,263 @@ body.login-locked{overflow:hidden}
 }
 </style>
 
+
+
+
+<style id="zero-exp-modal-style">
+.zeroModalBackdrop{
+  position:fixed; inset:0; background:rgba(15,23,42,.62); z-index:99999;
+  display:none; align-items:center; justify-content:center; padding:22px;
+}
+.zeroModalBackdrop.show{display:flex}
+.zeroModal{
+  width:min(1320px,96vw); max-height:92vh; overflow:hidden;
+  background:#fff; border-radius:22px; box-shadow:0 30px 90px rgba(2,8,23,.35);
+  border:1px solid #bfdbfe;
+}
+.zeroModalHeader{
+  background:linear-gradient(135deg,#063b46,#2563eb); color:#fff;
+  padding:16px 20px; display:flex; justify-content:space-between; gap:12px; align-items:center;
+}
+.zeroModalHeader h2{margin:0;font-size:24px;line-height:1.1}
+.zeroModalHeader .sub{opacity:.9;font-weight:800;font-size:13px;margin-top:4px}
+.zeroClose{
+  border:0; border-radius:12px; padding:10px 14px; cursor:pointer;
+  font-weight:900; background:#fff; color:#0f172a;
+}
+.zeroModalSummary{
+  display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:10px;
+  padding:14px 18px; background:#f8fbff; border-bottom:1px solid #dbeafe;
+}
+.zeroMini{
+  border:1px solid #bfdbfe; border-radius:14px; padding:10px 12px; background:#fff;
+}
+.zeroMini b{display:block;font-size:22px;color:#0b3b66}
+.zeroMini span{font-size:11px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.04em}
+.zeroModalBody{padding:14px 18px 18px; overflow:auto; max-height:62vh}
+.zeroTools{display:flex; gap:10px; align-items:center; margin-bottom:10px; flex-wrap:wrap}
+.zeroTools input{padding:10px 12px;border:1px solid #cbd5e1;border-radius:12px;min-width:320px;font-weight:800}
+.zeroTools .btn{padding:10px 14px}
+.zeroTable{width:100%; border-collapse:collapse; font-size:12px}
+.zeroTable th{
+  position:sticky; top:0; background:#eaf4ff; color:#0b3b66; z-index:2;
+  text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.03em;
+}
+.zeroTable th,.zeroTable td{border-bottom:1px solid #e5edf8; padding:8px 9px; vertical-align:top}
+.zeroTable tr:hover{background:#f8fbff}
+.zeroCode{font-weight:900;color:#2563eb}
+.zeroAmt{font-weight:900;color:#7c3aed;white-space:nowrap}
+.zeroBad{font-weight:900;color:#dc2626}
+.zeroStatus{font-weight:900;color:#0f766e}
+.zeroClickHint{cursor:pointer}
+@media(max-width:800px){
+  .zeroModalSummary{grid-template-columns:repeat(2,1fr)}
+  .zeroTools input{min-width:100%;width:100%}
+}
+</style>
+
+
+<style id="zero-exp-click-robust-style">
+.zeroClickHint{cursor:pointer!important;position:relative}
+.zeroClickHint:hover{transform:translateY(-2px);box-shadow:0 16px 35px rgba(37,99,235,.18)!important;border-color:#2563eb!important}
+.zeroClickHint:after{content:"↗";position:absolute;right:12px;top:10px;color:#2563eb;font-weight:900;font-size:16px}
+</style>
+
+
+<style id="universal-back-button-style">
+.backBtn{
+  background:linear-gradient(135deg,#0f766e,#2563eb)!important;
+  color:#fff!important;
+  border-color:#93c5fd!important;
+  font-weight:900!important;
+}
+.backBtn:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(37,99,235,.18)}
+.detailBackTop{
+  display:inline-flex;align-items:center;gap:8px;margin:0 0 14px 0;
+  padding:10px 16px;border-radius:14px;border:1px solid #bfdbfe;
+  background:#fff;color:#1d4ed8;font-weight:900;cursor:pointer;
+  box-shadow:0 8px 20px rgba(15,23,42,.08)
+}
+.detailBackTop:hover{background:#eff6ff}
+</style>
+
+
+<style id="dashboard-professional-pdf-fix">
+.clusterTag{
+  display:inline-block;margin-left:8px;padding:4px 9px;border-radius:999px;
+  font-size:12px;font-weight:800;color:#075985;
+  background:linear-gradient(135deg,#e0f2fe,#dbeafe);border:1px solid #93c5fd;vertical-align:middle;
+}
+@media print {
+  @page { size: A3 landscape; margin: 4mm; }
+  html, body {
+    width:auto!important;height:auto!important;overflow:visible!important;background:#fff!important;
+    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;
+  }
+  body.pdf-exporting header,
+  body.pdf-exporting nav,
+  body.pdf-exporting .filters,
+  body.pdf-exporting .btn,
+  body.pdf-exporting .miniBtn,
+  body.pdf-exporting .detailBackTop,
+  body.pdf-exporting #app > h2,
+  body.pdf-exporting #app > .muted,
+  body.pdf-exporting #app > .grid.section { display:none!important; }
+
+  body.pdf-exporting .wrap{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;}
+  body.pdf-exporting #app{width:100%!important;overflow:visible!important;background:#fff!important;}
+
+  body.pdf-exporting .card.section{
+    page-break-after:always!important;break-after:page!important;
+    page-break-inside:avoid!important;break-inside:avoid!important;
+    width:82.65%!important;max-width:none!important;min-height:0!important;
+    margin:0!important;padding:8px 10px!important;
+    box-shadow:none!important;border:1.4px solid #bfdbfe!important;border-radius:10px!important;
+    overflow:visible!important;background:#fff!important;
+    transform:scale(1.21);transform-origin:top left;
+  }
+  body.pdf-exporting .card.section h2{
+    font-size:34px!important;line-height:1.02!important;margin:0 0 5px 0!important;
+  }
+  body.pdf-exporting .clusterTag{font-size:13.3px!important;padding:6px 13px!important;}
+  body.pdf-exporting .subline{font-size:12.2px!important;font-weight:900!important;}
+  body.pdf-exporting .pill{
+    font-size:12.2px!important;padding:7px 12px!important;line-height:1.05!important;
+    border-width:1.4px!important;margin:2px!important;
+  }
+  body.pdf-exporting .tablewrap{overflow:visible!important;width:100%!important;max-width:none!important;margin-top:8px!important;}
+  body.pdf-exporting table{
+    width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse!important;
+    font-size:13.3px!important;
+  }
+  body.pdf-exporting th, body.pdf-exporting td{
+    white-space:normal!important;word-break:break-word!important;
+    padding:8px 5px!important;line-height:1.12!important;vertical-align:middle!important;
+  }
+  body.pdf-exporting th{font-size:12.2px!important;font-weight:900!important;}
+  body.pdf-exporting td b{font-size:13.3px!important;}
+  body.pdf-exporting td:nth-child(1), body.pdf-exporting th:nth-child(1){width:3%!important;}
+  body.pdf-exporting td:nth-child(2), body.pdf-exporting th:nth-child(2){width:14%!important;}
+  body.pdf-exporting td:nth-child(3), body.pdf-exporting th:nth-child(3){width:4%!important;}
+  body.pdf-exporting td:nth-child(4), body.pdf-exporting th:nth-child(4),
+  body.pdf-exporting td:nth-child(5), body.pdf-exporting th:nth-child(5),
+  body.pdf-exporting td:nth-child(6), body.pdf-exporting th:nth-child(6),
+  body.pdf-exporting td:nth-child(7), body.pdf-exporting th:nth-child(7),
+  body.pdf-exporting td:nth-child(8), body.pdf-exporting th:nth-child(8){width:5.4%!important;}
+  body.pdf-exporting td:nth-child(9), body.pdf-exporting th:nth-child(9),
+  body.pdf-exporting td:nth-child(10), body.pdf-exporting th:nth-child(10),
+  body.pdf-exporting td:nth-child(11), body.pdf-exporting th:nth-child(11){width:7.0%!important;}
+  body.pdf-exporting td:nth-child(12), body.pdf-exporting th:nth-child(12){width:5.2%!important;}
+  body.pdf-exporting td:nth-child(13), body.pdf-exporting th:nth-child(13),
+  body.pdf-exporting td:nth-child(14), body.pdf-exporting th:nth-child(14){width:4.4%!important;}
+  body.pdf-exporting td:nth-child(15), body.pdf-exporting th:nth-child(15){width:5.4%!important;}
+  body.pdf-exporting th:last-child, body.pdf-exporting td:last-child{display:none!important;}
+}
+</style>
+
+
+<style id="compact-ranking-score-style">
+/* Compact wide ranking/score tables */
+#app table th, #app table td{vertical-align:middle}
+#app .tablewrap table{border-collapse:collapse}
+#app .tablewrap td{line-height:1.22}
+
+/* Engineer Ranking tab compactness */
+body:not(.pdf-exporting) #app h2 + .tablewrap table th,
+body:not(.pdf-exporting) #app h2 + .tablewrap table td{
+  padding:8px 8px;
+}
+body:not(.pdf-exporting) #app h2 + .tablewrap table td:nth-child(2){
+  min-width:130px;
+}
+body:not(.pdf-exporting) #app h2 + .tablewrap table td:nth-child(3),
+body:not(.pdf-exporting) #app h2 + .tablewrap table td:nth-child(9),
+body:not(.pdf-exporting) #app h2 + .tablewrap table td:nth-child(10){
+  white-space:nowrap;
+}
+
+/* Score breakdown / category matrix compact cards */
+body:not(.pdf-exporting) #app .tablewrap td div,
+body:not(.pdf-exporting) #app .tablewrap td small{
+  line-height:1.15;
+}
+body:not(.pdf-exporting) #app .tablewrap td{
+  font-size:13px;
+}
+body:not(.pdf-exporting) #app .tablewrap th{
+  font-size:12px;
+}
+body:not(.pdf-exporting) #app .tablewrap .bar{
+  height:8px!important;
+  max-width:120px;
+}
+
+/* Reduce top cards height in these tabs */
+body:not(.pdf-exporting) #app .top3 .card,
+body:not(.pdf-exporting) #app .rankCard{
+  padding:16px!important;
+  min-height:auto!important;
+}
+body:not(.pdf-exporting) #app .top3 h2,
+body:not(.pdf-exporting) #app .rankCard h2{
+  font-size:22px!important;
+  line-height:1.15!important;
+}
+body:not(.pdf-exporting) #app .top3 .val,
+body:not(.pdf-exporting) #app .rankCard .val{
+  font-size:30px!important;
+}
+
+/* Balanced PDF: readable but no 9th category cut */
+@media print {
+  @page { size: A3 landscape; margin: 4mm; }
+  body.pdf-exporting .card.section{
+    width:82.65%!important;
+    transform:scale(1.21)!important;
+    transform-origin:top left!important;
+    padding:8px 10px!important;
+  }
+  body.pdf-exporting .card.section h2{
+    font-size:34px!important;
+    line-height:1.03!important;
+    margin-bottom:4px!important;
+  }
+  body.pdf-exporting .clusterTag{
+    font-size:13.3px!important;
+    padding:5px 11px!important;
+  }
+  body.pdf-exporting .subline{
+    font-size:12.2px!important;
+    font-weight:900!important;
+  }
+  body.pdf-exporting .pill{
+    font-size:14.5px!important;
+    padding:5px 9px!important;
+    line-height:1.05!important;
+    margin:1.5px!important;
+  }
+  body.pdf-exporting table{
+    font-size:13.3px!important;
+    table-layout:fixed!important;
+  }
+  body.pdf-exporting th{
+    font-size:12.2px!important;
+    padding:6px 4px!important;
+  }
+  body.pdf-exporting td{
+    font-size:13.3px!important;
+    padding:6px 4px!important;
+    line-height:1.10!important;
+  }
+  body.pdf-exporting td b{font-size:13.4px!important}
+}
+</style>
+
+
+<style id="back-button-compact-place">
+.backBtn{padding:12px 18px!important;min-width:105px!important}
+</style>
+
 </head><body class="login-locked">
 
 <div id="loginScreen" class="login-screen" role="dialog" aria-modal="true" aria-label="Dashboard Login">
@@ -277,8 +534,9 @@ body.login-locked{overflow:hidden}
   <select id="janpadFilter"><option value="">All Janpad</option></select>
   <select id="engineerFilter"><option value="">All Engineer</option></select>
   <select id="statusFilter"><option value="">All Status</option><option value="ONGOING">Ongoing</option><option value="COMPLETED">Completed</option><option value="PHYSICALLY COMPLETED">Physically Completed</option></select>
-  <select id="expFilter"><option value="">All Exp %</option><option value="lt25">&lt; 30%</option><option value="25_50">30% – 50%</option><option value="50_75">50% – 75%</option><option value="75_90">75% – 90%</option><option value="ge90">≥ 90%</option></select>
+  <select id="expFilter"><option value="">All Exp %</option><option value="zero">0% Exp</option><option value="lt25">&lt; 30%</option><option value="25_50">30% – 50%</option><option value="50_75">50% – 75%</option><option value="75_90">75% – 90%</option><option value="ge90">≥ 90%</option></select>
   <input id="search" placeholder="Search work / engineer / GP / code">
+  <button id="globalBackBtn" class="btn backBtn" onclick="goBackDashboard()">⬅ Back</button>
   <button class="btn" onclick="exportCurrentViewPDF()">Export Current View PDF</button>
   <button class="btn" onclick="exportCurrentViewPPTX()">Export Current View PPTX</button>
   <button class="btn" onclick="downloadCSV()">Export CSV</button>
@@ -289,6 +547,186 @@ body.login-locked{overflow:hidden}
 const D = window.JGSA_LIVE_DATA || {};
 const tabs=['मुख्य डैशबोर्ड','Work Monitor','Official Block Ranking','Engineer Ranking','Engineer Scorecard','Shreni wise Engineer Details','Needs Verification','Score Breakdown','श्रेणी Analysis','District War Room','Achievement Wall','Weekly Change Tracker','Performance DNA','Meeting Mode'];
 const ALL_CATEGORIES=['Farm Pond','Amrit Sarovar','Dug Well Recharge','Irrigation infrastructure','Water conservation & recharge','Watershed Related Works','Repair & Maintenance (Water Structures)','Gap Filling in Plantation','Work Not Permissible in VB-GRAM-G'];
+const ENGINEER_CLUSTER_MAP = {
+  "अनिल पटेल": [
+    "MAUHARI KATARA"
+  ],
+  "सत्यनारायण मिश्रा": [
+    "TALA"
+  ],
+  "श्रीमती साधना चौरे": [
+    "RAMGARH"
+  ],
+  "अश्वनी पटेल": [
+    "LALPUR"
+  ],
+  "सुनील मिश्रा": [
+    "BELA"
+  ],
+  "अनिल पटेल अति0": [
+    "PARASWAHI"
+  ],
+  "धनंजय त्रिपाठी": [
+    "BADERA"
+  ],
+  "बृजेश सिंह": [
+    "AMDARA"
+  ],
+  "राजा भैया सिंह": [
+    "TILAURA"
+  ],
+  "राज रंजन तिवारी अति0": [
+    "PAKARIYA"
+  ],
+  "जय अर्खेल": [
+    "PONDI"
+  ],
+  "अभिषेक तिवारी": [
+    "NADAN SHARDAPRASAD"
+  ],
+  "योगेन्द्र सिंह": [
+    "RIWARA"
+  ],
+  "श्रीमती मीना अग्रवाल": [
+    "GOBRI"
+  ],
+  "राज रंजन तिवारी": [
+    "KUSEDI"
+  ],
+  "सुरेश सिंह": [
+    "SONWARI"
+  ],
+  "सतीस समेले": [
+    "HIRAUNDI"
+  ],
+  "रमाकांत त्रिपाठी अति0": [
+    "KARIGOHI"
+  ],
+  "आशीष तिवारी अति0": [
+    "MAJHGAWAN"
+  ],
+  "अखिलेश सोनी अति0": [
+    "PRATAPPUR"
+  ],
+  "अखिलेश सोनी": [
+    "BADKHERA"
+  ],
+  "देवेन्द्र सिंह": [
+    "KHADAURRA"
+  ],
+  "आशीष तिवारी": [
+    "BARAUNDHA"
+  ],
+  "रमाकांत त्रिपाठी": [
+    "PINDRA"
+  ],
+  "कौशल पटेल अति0": [
+    "KATKONKALA"
+  ],
+  "राजीवलोचन त्रिपाठी": [
+    "SHIVRAJPUR"
+  ],
+  "संकल्प राणा": [
+    "DUREHA"
+  ],
+  "रितेश राजपूत": [
+    "JASO"
+  ],
+  "निशा तिवारी": [
+    "SITPURA"
+  ],
+  "हेमंत तिवारी": [
+    "BARAPATTHAR"
+  ],
+  "कौशल पटेल": [
+    "SINGHPUR"
+  ],
+  "प्रमोद तिवारी": [
+    "SURDAHA KALA"
+  ],
+  "संजय गुप्ता": [
+    "JIGNA"
+  ],
+  "श्रीमती साधना सिंह": [
+    "GORSARI"
+  ],
+  "राजा राम चंदेल": [
+    "BADAITMA"
+  ],
+  "राजा राम चंदेल अति0": [
+    "MURTIHAI"
+  ],
+  "अनिल पाण्डेय": [
+    "GANGASAGAR"
+  ],
+  "मोतीलाल लढ़िया": [
+    "ABER"
+  ],
+  "मनोज खम्परिया": [
+    "KRISHNAGARH"
+  ],
+  "अजय खरे": [
+    "MAHURACHHKADAILA"
+  ],
+  "भूपेन्द्र सिंह संविदा": [
+    "CHORMARI"
+  ],
+  "प्रमोद शुक्ला अति0": [
+    "BELA"
+  ],
+  "रमेश सिंह": [
+    "GORAIYA"
+  ],
+  "प्रमोद शुक्ला": [
+    "SAJJANPUR"
+  ],
+  "मनोज खम्परिया अति0": [
+    "BIHRA NO. 2"
+  ],
+  "महेन्‍द्र पारधी": [
+    "BARAKALA"
+  ],
+  "व्हीके मिश्रा अति0": [
+    "SOHAWAL"
+  ],
+  "शिवलाल भारती": [
+    "RAIGAON"
+  ],
+  "संजय पाण्डेय": [
+    "BHAINSWAR"
+  ],
+  "कुलदीप पयासी": [
+    "SEMARIA"
+  ],
+  "धर्मेन्द्र कोरी": [
+    "BARAHANA"
+  ],
+  "व्‍ही0के0मिश्रा": [
+    "BHARJUNAKHUAD"
+  ],
+  "आशुतोष वर्मा": [
+    "PHUTAUNDHA"
+  ],
+  "राकेश ताम्रकार": [
+    "PARASAMANIYA"
+  ],
+  "राज कुमार पाण्डेय अति 0": [
+    "BIHATA"
+  ],
+  "राकेश ताम्रकार अति0": [
+    "SHYAAMANAGAR"
+  ],
+  "राज कुमार पाण्डेय": [
+    "ICHAUL"
+  ],
+  "दीपक सिंह": [
+    "JIGANAHAT",
+    "ICHAUL"
+  ],
+  "हरनाम सिंह": [
+    "PONDEE"
+  ]
+};
 let active=0;
 let selectedBreakdown=null;
 let workMonitorPage=1;
@@ -412,7 +850,7 @@ function matchSearch(obj,q){return !q || JSON.stringify(obj).toLowerCase().inclu
 function passDistrictBlock(w){let d=currentDistrict(), j=currentJanpad(); return (!d || rowDistrict(w)===d) && (!j || String(w.block||'').toUpperCase()===j)}
 function passEngineer(w){let e=currentEngineer(); return !e || String(w.engineer||'')===e}
 function passStatus(w){let s=currentStatus(); if(!s) return true; let f=statusFlags(w); if(s==='ONGOING') return f.ongoing; if(s==='COMPLETED') return f.comp; if(s==='PHYSICALLY COMPLETED') return f.phys; return true}
-function passExp(w){let r=currentExpRange(); if(!r) return true; let v=Number(w.expPercent||0); if(r==='lt25') return v<25; if(r==='25_50') return v>=25&&v<50; if(r==='50_75') return v>=50&&v<75; if(r==='75_90') return v>=75&&v<90; if(r==='ge90') return v>=90; return true}
+function passExp(w){let r=currentExpRange(); if(!r) return true; let v=Number(w.expPercent||0); if(r==='zero') return v===0; if(r==='lt25') return v<30; if(r==='25_50') return v>=30&&v<50; if(r==='50_75') return v>=50&&v<75; if(r==='75_90') return v>=75&&v<90; if(r==='ge90') return v>=90; return true}
 function fworks(){let q=currentSearch(); return works().filter(w=>passDistrictBlock(w)&&passEngineer(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q))}
 
 function workYear(w){
@@ -426,6 +864,31 @@ function workYear(w){
   return y || '—';
 }
 function remainingExp(w){return Math.max(0, Number(w.sanctionAmount||0)-Number(w.bookedAmount||0));}
+
+
+function overviewExtraStats(){
+  const rows=fworks();
+  let ongoingWorks=0, ongoingRemaining=0, zeroWorks=0, zeroSanction=0;
+  rows.forEach(w=>{
+    const f=statusFlags(w);
+    const p=Number(w.expPercent||0);
+    if(f.ongoing){
+      ongoingWorks++;
+      ongoingRemaining += remainingExp(w);
+    }
+    if(p===0){
+      zeroWorks++;
+      zeroSanction += Number(w.sanctionAmount||0);
+    }
+  });
+  return {ongoingWorks, ongoingRemaining, zeroWorks, zeroSanction};
+}
+function engineerClusterName(engineerName, janpadText){
+  const raw = String(engineerName||'').trim();
+  const key = raw.replace(/[,，]+$/,'').trim().replace(/\s+/g,' ');
+  const clusters = ENGINEER_CLUSTER_MAP[key] || ENGINEER_CLUSTER_MAP[raw] || [];
+  return clusters.length ? clusters.join(', ') : '—';
+}
 
 function availableYears(){
   let ys=[...new Set(works().map(w=>workYear(w)).filter(y=>validFY(y)).map(normFY))].sort();
@@ -490,17 +953,25 @@ function expBucketCountsForEngineer(engineerName){
   const q=currentSearch();
   const rows=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q)&&String(w.engineer||'')===engineerName);
   let b30=0, b3050=0, b5075=0, b7590=0, b90=0;
+  let ongoingWorks=0, ongoingRemaining=0, zeroWorks=0, zeroSanction=0;
   rows.forEach(w=>{
     const f=statusFlags(w);
-    if(!f.ongoing) return;
     const p=Number(w.expPercent||0);
-    if(p<30) b30++;
-    else if(p<50) b3050++;
-    else if(p<75) b5075++;
-    else if(p<90) b7590++;
-    else b90++;
+    if(f.ongoing){
+      ongoingWorks++;
+      ongoingRemaining += remainingExp(w);
+      if(p<30) b30++;
+      else if(p<50) b3050++;
+      else if(p<75) b5075++;
+      else if(p<90) b7590++;
+      else b90++;
+    }
+    if(p===0){
+      zeroWorks++;
+      zeroSanction += Number(w.sanctionAmount||0);
+    }
   });
-  return {b30,b3050,b5075,b7590,b90};
+  return {b30,b3050,b5075,b7590,b90,ongoingWorks,ongoingRemaining,zeroWorks,zeroSanction};
 }
 
 function statusFlags(w){let s=String(w.status||'').trim().toUpperCase(); let phys=(s==='PHYSICALLY COMPLETED')||s.includes('PHYSICALLY COMPLETED')||s.includes('PHYCS')||s.includes('भौतिक'); let comp=!phys&&((s==='COMPLETED')||s.includes('COMPLETED')||s==='COMPLETE'||s.includes('पूर्ण')); let ongoing=(s==='ONGOING')||s.includes('ONGOING')||s.includes('प्रगतिरत')||s.includes('IN PROGRESS')||s.includes('चालू'); return {comp,phys,ongoing}}
@@ -508,12 +979,99 @@ function calcCategory(items){let started=items.length; if(!started) return {scor
 function buildCategoryBreakdown(items){let totalSanction=items.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let by={}; items.forEach(w=>{let k=normType(w.workType)||'Uncategorised'; (by[k]||(by[k]=[])).push(w)}); let out=[]; Object.entries(by).forEach(([category,rows])=>{let c=calcCategory(rows); let weight=totalSanction?(c.sanction/totalSanction)*100:(items.length?c.works/items.length*100:0); out.push({...c,category,weight:+weight.toFixed(2),weighted:+((weight/100)*c.score).toFixed(4),grade:grade(c.score)})}); return out.sort((a,b)=>b.weight-a.weight)}
 function calcEngineers(items){let groups={}; items.forEach(w=>{let e=w.engineer||'Unmapped'; (groups[e]||(groups[e]=[])).push(w)}); let out=[]; Object.entries(groups).forEach(([engineer,rows])=>{let cats=buildCategoryBreakdown(rows); let score=+(cats.reduce((a,c)=>a+c.weight/100*c.score,0)).toFixed(2); let g=grade(score); let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0); let flags=rows.map(statusFlags); let completed=flags.filter(x=>x.comp).length; let physical=flags.filter(x=>x.phys).length; let ongoing=flags.filter(x=>x.ongoing).length; let gp=new Set(rows.map(w=>w.panchayat).filter(Boolean)).size; let blocks=[...new Set(rows.map(w=>String(w.block||'').toUpperCase()).filter(Boolean))].join(', '); out.push({engineer,janpad:blocks,works:rows.length,completed,physicalCompleted:physical,ongoing,needsVerification:rows.filter(w=>w.needsVerification).length,score,grade:g,gradeText:gradeText(g),avgBookedPct:sanction?booked/sanction*100:0,sanction,booked,categories:cats,gpCount:gp})}); out.sort((a,b)=>b.score-a.score || a.needsVerification-b.needsVerification || b.works-a.works); out.forEach((x,i)=>x.rank=i+1); let byJan={}; out.forEach(x=>{let primary=String(x.janpad||'').split(',')[0].trim()||'UNKNOWN'; (byJan[primary]||(byJan[primary]=[])).push(x); x.primaryJanpad=primary}); Object.values(byJan).forEach(arr=>arr.sort((a,b)=>b.score-a.score || a.needsVerification-b.needsVerification || b.works-a.works).forEach((x,i)=>x.janpadRank=i+1)); return out}
 function calcBlocks(items){let groups={}; items.forEach(w=>{let b=String(w.block||'Unknown').toUpperCase(); (groups[b]||(groups[b]=[])).push(w)}); let out=[]; Object.entries(groups).forEach(([block,rows])=>{let cats=buildCategoryBreakdown(rows); let score=+(cats.reduce((a,c)=>a+c.weight/100*c.score,0)).toFixed(2); let g=grade(score); let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0); let flags=rows.map(statusFlags); out.push({block,works:rows.length,completed:flags.filter(x=>x.comp).length,physicalCompleted:flags.filter(x=>x.phys).length,ongoing:flags.filter(x=>x.ongoing).length,needsVerification:rows.filter(w=>w.needsVerification).length,score,grade:g,gradeText:gradeText(g),avgBookedPct:sanction?booked/sanction*100:0,sanction,booked,categories:cats,gpCount:new Set(rows.map(w=>w.panchayat).filter(Boolean)).size})}); out.sort((a,b)=>b.score-a.score); out.forEach((x,i)=>x.rank=i+1); return out}
-function render(){document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===active)); if(!works().length && active!==2) return app(noData()); [overview,workMonitor,official,engineer,engineerScorecard,shreniWiseEngineerDetails,needs,scoreBreakdown,category,war,achieve,weeklyTracker,dna,meeting][active]();}
+
+function goBackDashboard(){
+  // Close modal first if open
+  const modal = document.getElementById('zeroExpModalBackdrop');
+  if(modal && modal.classList.contains('show')){ closeZeroExpModal(); return; }
+
+  // Return from detail screen to previous main tab if remembered
+  if(window.__detailBackTab !== undefined && window.__detailBackTab !== null){
+    active = window.__detailBackTab;
+    window.__detailBackTab = null;
+    render();
+    return;
+  }
+
+  // Return to previous visited tab
+  window.__tabHistory = window.__tabHistory || [];
+  const prev = window.__tabHistory.pop();
+  if(prev !== undefined && prev !== null){
+    active = prev;
+    window.__lastActiveTab = active;
+    render();
+    return;
+  }
+
+  // Fallback: main dashboard
+  active = 0;
+  window.__lastActiveTab = active;
+  render();
+}
+function rememberDetailBack(){
+  window.__detailBackTab = active;
+}
+
+function render(){
+  window.__tabHistory = window.__tabHistory || [];
+  if(window.__lastActiveTab !== undefined && window.__lastActiveTab !== active){ window.__tabHistory.push(window.__lastActiveTab); }
+  window.__lastActiveTab = active;
+document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===active)); if(!works().length && active!==2) return app(noData()); [overview,workMonitor,official,engineer,engineerScorecard,shreniWiseEngineerDetails,needs,scoreBreakdown,category,war,achieve,weeklyTracker,dna,meeting][active]();}
 function noData(){return '<div class="empty">No data available. Run GitHub Action / local fetch once.</div>'}
 function officialSummary(){let s=summ(); let compOnly=Number(s.completedOnly ?? s.completed ?? 0); let phys=Number(s.physicalCompleted||0); let totalComp=Number(s.totalCompleted ?? s.officialTotalCompleted ?? (compOnly+phys)); return {totalWorks:Number(s.totalWorks||works().length),completed:compOnly,totalCompleted:totalComp,completedOnly:compOnly,physicalCompleted:phys,abhiyanProgress:Number(s.abhiyanProgress||s.officialAbhiyanProgress||s.physicalCompleted||0),needsVerification:Number(s.needsVerification||works().filter(w=>w.needsVerification).length),sanction:Number(s.sanction||works().reduce((a,w)=>a+Number(w.sanctionAmount||0),0)),booked:Number(s.booked||works().reduce((a,w)=>a+Number(w.bookedAmount||0),0)),bookedPct:Number(s.bookedPct||0),unmappedWorks:Number(s.unmappedWorks||0),engineers:Number(s.engineers||0)}}
-function kpis(){let s=officialSummary();return `<div class="grid"><div class="card kpi"><div class="label">Total Target Works</div><div class="val">${fmt(s.totalWorks)}</div><small>JGSA overview source</small></div><div class="card kpi"><div class="label">Total Completed</div><div class="val" style="color:#059669">${fmt(s.totalCompleted)}</div><small>Completed + Physically Completed</small></div><div class="card kpi"><div class="label">Abhiyan Progress</div><div class="val">${fmt(s.abhiyanProgress||s.physicalCompleted)}</div><small>After 19-Mar official value</small></div><div class="card kpi"><div class="label">Total Sanction</div><div class="val" style="color:#7c3aed">${moneyCr(s.sanction)}</div><small>Official overview</small></div><div class="card kpi"><div class="label">Total Booked</div><div class="val" style="color:#0f766e">${moneyCr(s.booked)}</div><small>${pct(s.bookedPct)} booked</small></div></div>`}
-function distStats(name){let rows=works().filter(w=>rowDistrict(w)===name); let flags=rows.map(statusFlags); let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0); return {name,rows,works:rows.length,completed:flags.filter(f=>f.comp).length,physical:flags.filter(f=>f.phys).length,needs:rows.filter(w=>w.needsVerification).length,sanction,booked,gps:new Set(rows.map(w=>w.panchayat).filter(Boolean)).size,bookedPct:sanction?booked/sanction*100:0}}
-function zilaCard(st){let chips=(districtGroups()[st.name]||[]).map(j=>`<span class="chip">${j}</span>`).join('');return `<div class="zilaCard"><h2>📍 जिला ${st.name==='SATNA'?'Satna':'Maihar'}</h2><button class="zilaBtn" onclick="document.getElementById('districtFilter').value='${st.name}';updateJanpadOptions();active=1;render()">${st.name} data देखें</button><div class="metricGrid"><div class="metricBox"><b>${fmt(st.works)}</b>JGSA कार्य</div><div class="metricBox criticalBox"><b>${fmt(st.needs)}</b>सत्यापन &lt;30% CC/PHYCS</div><div class="metricBox"><b>${fmt(st.completed+st.physical)}</b>पूर्ण + भौतिक पूर्ण</div><div class="metricBox"><b>${fmt(st.gps)}</b>Gram Panchayat</div><div class="metricBox"><b>${moneyCr(st.sanction)}</b>Total Sanction</div><div class="metricBox"><b>${moneyCr(st.booked)}</b>Total Booked</div><div class="metricBox"><b>${pct(st.bookedPct)}</b>Booked % Avg</div><div class="metricBox"><b>${fmt((districtGroups()[st.name]||[]).length)}</b>Janpad</div></div><div class="chipRow">${chips}</div><div class="note">${st.name==='SATNA'?'Satna में Majhgawan, Nagod, Rampur Baghelan, Satna, Unchahara शामिल हैं।':'Maihar में Amarpatan, Ramnagar, Maihar शामिल हैं।'}</div></div>`}
+function kpis(){
+let s=officialSummary();
+let ex=overviewExtraStats();
+return `<div class="grid">
+<div class="card kpi"><div class="label">Total Target Works</div><div class="val">${fmt(s.totalWorks)}</div><small>JGSA overview source</small></div>
+<div class="card kpi"><div class="label">Total Completed</div><div class="val" style="color:#059669">${fmt(s.totalCompleted)}</div><small>Completed + Physically Completed</small></div>
+<div class="card kpi"><div class="label">Abhiyan Progress</div><div class="val">${fmt(s.abhiyanProgress||s.physicalCompleted)}</div><small>After 19-Mar official value</small></div>
+<div class="card kpi"><div class="label">Total Sanction</div><div class="val" style="color:#7c3aed">${moneyCr(s.sanction)}</div><small>Official overview</small></div>
+<div class="card kpi"><div class="label">Total Booked</div><div class="val" style="color:#0f766e">${moneyCr(s.booked)}</div><small>${pct(s.bookedPct)} booked</small></div>
+<div class="card kpi"><div class="label">Ongoing Works</div><div class="val" style="color:#ea580c">${fmt(ex.ongoingWorks)}</div><small>Filtered ongoing works</small></div>
+<div class="card kpi"><div class="label">Ongoing Remaining Exp</div><div class="val" style="color:#dc2626">${moneyCr(ex.ongoingRemaining)}</div><small>Ongoing works remaining</small></div>
+<div class="card kpi zeroClickHint" data-zero-exp="all" onclick="openZeroExpModal()"><div class="label">0% Exp Works</div><div class="val" style="color:#2563eb">${fmt(ex.zeroWorks)}</div><small>Click to view work list</small></div>
+<div class="card kpi"><div class="label">0% Exp Sanction</div><div class="val" style="color:#7c3aed">${moneyCr(ex.zeroSanction)}</div><small>Sanction amount</small></div>
+</div>`}
+function distStats(name){
+  let rows=works().filter(w=>rowDistrict(w)===name);
+  let flags=rows.map(statusFlags);
+  let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0);
+  let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0);
+  let ongoingRows=rows.filter((w,i)=>flags[i].ongoing);
+  let ongoingBooked=ongoingRows.reduce((a,w)=>a+Number(w.bookedAmount||0),0);
+  let ongoingRemaining=ongoingRows.reduce((a,w)=>a+remainingExp(w),0);
+  let zeroRows=rows.filter(w=>Number(w.expPercent||0)===0);
+  let zeroSanction=zeroRows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0);
+  return {
+    name,rows,works:rows.length,
+    completed:flags.filter(f=>f.comp).length,
+    physical:flags.filter(f=>f.phys).length,
+    ongoing:ongoingRows.length,
+    ongoingBooked,ongoingRemaining,
+    zeroWorks:zeroRows.length,zeroSanction,
+    needs:rows.filter(w=>w.needsVerification).length,
+    sanction,booked,
+    gps:new Set(rows.map(w=>w.panchayat).filter(Boolean)).size,
+    bookedPct:sanction?booked/sanction*100:0
+  }
+}
+function zilaCard(st){
+  return `<div class="zilaCard"><h2>📍 जिला ${st.name==='SATNA'?'Satna':'Maihar'}</h2>
+  <button class="zilaBtn" onclick="document.getElementById('districtFilter').value='${st.name}';updateJanpadOptions();active=1;render()">${st.name} data देखें</button>
+  <div class="metricGrid">
+    <div class="metricBox"><b>${fmt(st.works)}</b>JGSA कार्य</div>
+    <div class="metricBox criticalBox"><b>${fmt(st.needs)}</b>सत्यापन &lt;30% CC/PHYCS</div>
+    <div class="metricBox"><b>${fmt(st.completed+st.physical)}</b>पूर्ण + भौतिक पूर्ण</div>
+    <div class="metricBox"><b>${fmt(st.gps)}</b>Gram Panchayat</div>
+    <div class="metricBox"><b>${moneyCr(st.sanction)}</b>Total Sanction</div>
+    <div class="metricBox"><b>${moneyCr(st.booked)}</b>Total Booked</div>
+    <div class="metricBox"><b>${fmt(st.ongoing)}</b>Ongoing Works</div>
+    <div class="metricBox"><b>${moneyCr(st.ongoingBooked)}</b>Ongoing Expenditure</div>
+    <div class="metricBox"><b>${moneyCr(st.ongoingRemaining)}</b>Ongoing Remaining Exp</div>
+    <div class="metricBox zeroClickHint" data-zero-exp="${st.name}" onclick="openZeroExpModal(st.name)"><b>${fmt(st.zeroWorks)}</b>0% Exp Works<br><small style="font-weight:800;color:#2563eb">Click to view list</small></div>
+    <div class="metricBox"><b>${moneyCr(st.zeroSanction)}</b>0% Exp Sanction</div>
+  </div></div>`}
 function overview(){let st=distStats('SATNA'), mh=distStats('MAIHAR'); app(kpis()+`<section class="section zilaGrid">${zilaCard(st)}${zilaCard(mh)}</section><section class="section twocol"><div class="card"><h2>Critical Summary</h2><p><b>${fmt(works().filter(w=>w.needsVerification).length)}</b> Needs Verification works direct JGSA Work Monitor badge se.</p><p><b>${fmt(works().filter(w=>(w.engineer||'')==='Unmapped').length)}</b> works engineer mapping me unmapped.</p></div><div class="card formula"><h2>JGSA Formula</h2><b>Category Weight</b> = Category Sanction / Total Sanction<br><b>Part A</b> = (Completed + Physically Completed) / Started × 5<br><b>Part B</b> = Booked / Sanction × 5<br><b>Composite</b> = Σ(Weight × Category Score)</div></section>`)}
 function workMonitor(){
   let rows=fworks();
@@ -629,6 +1187,7 @@ function shreniWiseEngineerDetails(){
     const ongoingVal = meta.ongoing ?? items.reduce((a,r)=>a+r.ongoing,0);
     const verificationVal = meta.needsVerification ?? items.reduce((a,r)=>a+r.needs,0);
     const expB = expBucketCountsForEngineer(engineer);
+    const clusterName = engineerClusterName(engineer, ej||meta.primaryJanpad||meta.janpad);
     const body=items.map((r,i)=>[
       i+1,
       `<b><span class="dot c${(ALL_CATEGORIES.indexOf(r.category)%8)+1}"></span>${r.category}</b>`,
@@ -650,7 +1209,7 @@ function shreniWiseEngineerDetails(){
     return `<div class="card section" style="overflow:hidden">
       <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px">
         <div>
-          <h2 style="margin:0">${engineer}</h2>
+          <h2 style="margin:0">${engineer} <span class="clusterTag">क्लस्टर: ${clusterName}</span></h2>
           <span class="subline">${ej||'All Janpad'} • Janpad Rank ${fmt(janpadRank)} • Score ${scoreVal}/10</span>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -660,6 +1219,10 @@ function shreniWiseEngineerDetails(){
           <span class="pill">Physically Completed ${fmt(physicalVal)}</span>
           <span class="pill">Ongoing ${fmt(ongoingVal)}</span>
           <span class="pill">Verification ${fmt(verificationVal)}</span>
+          <span class="pill">Ongoing Works ${fmt(expB.ongoingWorks)}</span>
+          <span class="pill">Ong. Remaining ${money(expB.ongoingRemaining)}</span>
+          <span class="pill">0% Exp Works ${fmt(expB.zeroWorks)}</span>
+          <span class="pill">0% Sanction ${money(expB.zeroSanction)}</span>
           <span class="pill">&lt;30% Ong. Works ${fmt(expB.b30)}</span>
           <span class="pill">30–50% Ong. Works ${fmt(expB.b3050)}</span>
           <span class="pill">50–75% Ong. Works ${fmt(expB.b5075)}</span>
@@ -686,6 +1249,7 @@ function shreniWiseEngineerDetails(){
   app(`<h2>Shreni wise Engineer Details</h2><p class="muted">Engineer-wise card view: engineer का नाम एक बार दिखेगा और नीचे सभी work categories की table रहेगी, zero work categories सहित.</p>${topCards}${engineerCards}`);
 }
 function openEngineerCategory(name,category){
+  rememberDetailBack();
   const q=currentSearch();
   let rows=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q)&&String(w.engineer||'')===name&&normType(w.workType)===category);
   rows=rows.sort((a,b)=>String(a.block||'').localeCompare(String(b.block||''))||String(a.panchayat||'').localeCompare(String(b.panchayat||''))||String(workYear(b)).localeCompare(String(workYear(a))));
@@ -998,6 +1562,102 @@ async function exportCurrentViewPPTX(){
   }
 }
 
+
+let ZERO_EXP_CONTEXT = {district:'', rows:[]};
+function zeroExpRows(districtName){
+  let rows = fworks().filter(w => Number(w.expPercent||0) === 0);
+  if(districtName) rows = rows.filter(w => rowDistrict(w) === districtName);
+  return rows.sort((a,b)=>String(rowDistrict(a)).localeCompare(String(rowDistrict(b))) ||
+    String(a.block||'').localeCompare(String(b.block||'')) ||
+    String(a.panchayat||'').localeCompare(String(b.panchayat||'')) ||
+    String(a.engineer||'').localeCompare(String(b.engineer||'')));
+}
+function openZeroExpModal(districtName=''){
+  const rows = zeroExpRows(districtName);
+  ZERO_EXP_CONTEXT = {district:districtName, rows};
+  const title = districtName ? `${districtName} — 0% Expenditure Work List` : '0% Expenditure Work List';
+  document.getElementById('zeroExpTitle').innerText = title;
+  document.getElementById('zeroExpSub').innerText = `${fmt(rows.length)} zero expenditure works in current filters`;
+  document.getElementById('zeroExpSearch').value = '';
+  renderZeroExpSummary();
+  renderZeroExpRows();
+  document.getElementById('zeroExpModalBackdrop').classList.add('show');
+}
+function closeZeroExpModal(){
+  document.getElementById('zeroExpModalBackdrop').classList.remove('show');
+}
+function renderZeroExpSummary(){
+  const rows = ZERO_EXP_CONTEXT.rows || [];
+  const sanction = rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0);
+  const remaining = rows.reduce((a,w)=>a+remainingExp(w),0);
+  const gps = new Set(rows.map(w=>w.panchayat).filter(Boolean)).size;
+  const engineers = new Set(rows.map(w=>w.engineer).filter(Boolean)).size;
+  document.getElementById('zeroExpSummary').innerHTML = `
+    <div class="zeroMini"><span>Works</span><b>${fmt(rows.length)}</b></div>
+    <div class="zeroMini"><span>Sanction</span><b>${moneyCr(sanction)}</b></div>
+    <div class="zeroMini"><span>Remaining</span><b>${moneyCr(remaining)}</b></div>
+    <div class="zeroMini"><span>Engineers</span><b>${fmt(engineers)}</b></div>
+    <div class="zeroMini"><span>GP</span><b>${fmt(gps)}</b></div>`;
+}
+function renderZeroExpRows(){
+  const q = String(document.getElementById('zeroExpSearch')?.value || '').toLowerCase().trim();
+  let rows = ZERO_EXP_CONTEXT.rows || [];
+  if(q){
+    rows = rows.filter(w => [
+      w.workCode, w.workName, rowDistrict(w), w.block, w.panchayat, w.engineer, w.workType, w.status
+    ].join(' ').toLowerCase().includes(q));
+  }
+  const body = rows.map((w,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td class="zeroCode">${w.workCode||''}</td>
+      <td><b>${w.workName||''}</b></td>
+      <td>${rowDistrict(w)}</td>
+      <td>${w.block||''}</td>
+      <td>${w.panchayat||''}</td>
+      <td>${w.engineer||''}</td>
+      <td>${normType(w.workType)}</td>
+      <td class="zeroAmt">${money(w.sanctionAmount||0)}</td>
+      <td>${money(w.bookedAmount||0)}</td>
+      <td class="zeroBad">${money(remainingExp(w))}</td>
+      <td>${Number(w.expPercent||0).toFixed(1)}%</td>
+      <td class="zeroStatus">${w.status||''}</td>
+    </tr>`).join('');
+  document.getElementById('zeroExpTable').innerHTML = `
+    <table class="zeroTable">
+      <thead><tr>
+        <th>#</th><th>Work Code</th><th>Work Name</th><th>District</th><th>Janpad</th><th>GP</th>
+        <th>Engineer</th><th>Work Type</th><th>Sanction</th><th>Booked</th><th>Remaining</th><th>Exp %</th><th>Status</th>
+      </tr></thead>
+      <tbody>${body || `<tr><td colspan="13" style="text-align:center;font-weight:900;padding:20px">No 0% expenditure works found.</td></tr>`}</tbody>
+    </table>`;
+}
+function downloadZeroExpCSV(){
+  const rows = ZERO_EXP_CONTEXT.rows || [];
+  const keys = ['workCode','workName','district','block','panchayat','engineer','workType','sanctionAmount','bookedAmount','remaining','expPercent','status'];
+  const csv = [keys.join(',')].concat(rows.map(w => [
+    w.workCode||'', w.workName||'', rowDistrict(w), w.block||'', w.panchayat||'', w.engineer||'',
+    normType(w.workType), w.sanctionAmount||0, w.bookedAmount||0, remainingExp(w), Number(w.expPercent||0), w.status||''
+  ].map(v => `"${String(v).replaceAll('"','""')}"`).join(','))).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=(ZERO_EXP_CONTEXT.district?ZERO_EXP_CONTEXT.district+'_':'')+'zero_exp_works.csv';
+  a.click();
+}
+
+
+// Robust delegated click handler for 0% Exp cards (works after every re-render)
+document.addEventListener('click', function(ev){
+  const card = ev.target.closest && ev.target.closest('.zeroClickHint,[data-zero-exp]');
+  if(!card) return;
+  const txt = (card.innerText || '').toLowerCase();
+  if(!txt.includes('0% exp works')) return;
+  ev.preventDefault();
+  ev.stopPropagation();
+  const ctx = card.getAttribute('data-zero-exp');
+  openZeroExpModal(ctx && ctx !== 'all' ? ctx : '');
+}, true);
+
 function downloadCSV(){let rows=fworks(); if(!rows.length)return; let keys=['district','workCode','workName','block','panchayat','engineer','workType','status','needsVerification','sanctionAmount','bookedAmount','expPercent']; let csv=[keys.join(',')].concat(rows.map(r=>keys.map(k=>{let val=k==='district'?rowDistrict(r):(r[k]??''); return '"'+String(val).replaceAll('"','""')+'"'}).join(','))).join('\n'); let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='jgsa_current_view.csv'; a.click();}
 init();
 </script>
@@ -1063,5 +1723,26 @@ init();
   });
 })();
 </script>
+
+
+<div id="zeroExpModalBackdrop" class="zeroModalBackdrop" onclick="if(event.target===this) closeZeroExpModal()">
+  <div class="zeroModal">
+    <div class="zeroModalHeader">
+      <div>
+        <h2 id="zeroExpTitle">0% Expenditure Work List</h2>
+        <div class="sub" id="zeroExpSub">Zero expenditure works</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center"><button class="zeroClose" onclick="goBackDashboard()">⬅ Back</button><button class="zeroClose" onclick="closeZeroExpModal()">Close ✕</button></div>
+    </div>
+    <div class="zeroModalSummary" id="zeroExpSummary"></div>
+    <div class="zeroModalBody">
+      <div class="zeroTools">
+        <input id="zeroExpSearch" placeholder="Search zero exp work / engineer / GP / code" oninput="renderZeroExpRows()">
+        <button class="btn" onclick="downloadZeroExpCSV()">Export 0% CSV</button>
+      </div>
+      <div id="zeroExpTable"></div>
+    </div>
+  </div>
+</div>
 
 </body></html>
