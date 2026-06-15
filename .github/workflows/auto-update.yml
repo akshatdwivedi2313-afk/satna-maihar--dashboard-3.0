@@ -3,7 +3,8 @@ name: Auto update JGSA dashboard
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 4 * * *'
+    # 11:00 AM IST daily = 05:30 UTC
+    - cron: '30 5 * * *'
 
 permissions:
   contents: write
