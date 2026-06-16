@@ -229,27 +229,6 @@ body.login-locked{overflow:hidden}
 </style>
 
 
-<style id="pdf-export-fix">
-@media print {
-  body.pdf-exporting {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    background: #e8fbf8 !important;
-  }
-  body.pdf-exporting .wrap { max-width: none !important; }
-  body.pdf-exporting .card, body.pdf-exporting header, body.pdf-exporting .tabs {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-  body.pdf-exporting .section { break-inside: avoid; page-break-inside: avoid; }
-  body.pdf-exporting table { font-size: 10px !important; }
-  body.pdf-exporting .btn { display: none !important; }
-}
-</style>
-
-
-
-
 <style id="zero-exp-modal-style">
 .zeroModalBackdrop{
   position:fixed; inset:0; background:rgba(15,23,42,.62); z-index:99999;
@@ -328,180 +307,190 @@ body.login-locked{overflow:hidden}
 </style>
 
 
-<style id="dashboard-professional-pdf-fix">
-.clusterTag{
-  display:inline-block;margin-left:8px;padding:4px 9px;border-radius:999px;
-  font-size:12px;font-weight:800;color:#075985;
-  background:linear-gradient(135deg,#e0f2fe,#dbeafe);border:1px solid #93c5fd;vertical-align:middle;
-}
+
+<style id="shreni-browser-print-final-css">
 @media print {
-  @page { size: A3 landscape; margin: 4mm; }
+  @page { size: A3 landscape; margin: 5mm; }
+
   html, body {
-    width:auto!important;height:auto!important;overflow:visible!important;background:#fff!important;
-    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
+
+  body.pdf-exporting,
+  body.pdf-exporting * {
+    box-sizing: border-box !important;
+    transform: none !important;
+    rotate: none !important;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+  }
+
   body.pdf-exporting header,
   body.pdf-exporting nav,
+  body.pdf-exporting .tabs,
   body.pdf-exporting .filters,
   body.pdf-exporting .btn,
   body.pdf-exporting .miniBtn,
-  body.pdf-exporting .detailBackTop,
-  body.pdf-exporting #app > h2,
-  body.pdf-exporting #app > .muted,
-  body.pdf-exporting #app > .grid.section { display:none!important; }
+  body.pdf-exporting .backBtn,
+  body.pdf-exporting .detailBackTop {
+    display: none !important;
+  }
 
-  body.pdf-exporting .wrap{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;}
-  body.pdf-exporting #app{width:100%!important;overflow:visible!important;background:#fff!important;}
+  body.pdf-exporting .wrap,
+  body.pdf-exporting #app {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
 
-  body.pdf-exporting .card.section{
-    page-break-after:always!important;break-after:page!important;
-    page-break-inside:avoid!important;break-inside:avoid!important;
-    width:82.65%!important;max-width:none!important;min-height:0!important;
-    margin:0!important;padding:8px 10px!important;
-    box-shadow:none!important;border:1.4px solid #bfdbfe!important;border-radius:10px!important;
-    overflow:visible!important;background:#fff!important;
-    transform:scale(1.21);transform-origin:top left;
+  /* Apply these only in Shreni wise Engineer Details PDF */
+  body.pdf-exporting.pdf-shreni #app > h2,
+  body.pdf-exporting.pdf-shreni #app > .muted,
+  body.pdf-exporting.pdf-shreni #app > .grid,
+  body.pdf-exporting.pdf-shreni #app > .grid.section,
+  body.pdf-exporting.pdf-shreni #app > p {
+    display: none !important;
   }
-  body.pdf-exporting .card.section h2{
-    font-size:34px!important;line-height:1.02!important;margin:0 0 5px 0!important;
-  }
-  body.pdf-exporting .clusterTag{font-size:13.3px!important;padding:6px 13px!important;}
-  body.pdf-exporting .subline{font-size:12.2px!important;font-weight:900!important;}
-  body.pdf-exporting .pill{
-    font-size:12.2px!important;padding:7px 12px!important;line-height:1.05!important;
-    border-width:1.4px!important;margin:2px!important;
-  }
-  body.pdf-exporting .tablewrap{overflow:visible!important;width:100%!important;max-width:none!important;margin-top:8px!important;}
-  body.pdf-exporting table{
-    width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse!important;
-    font-size:13.3px!important;
-  }
-  body.pdf-exporting th, body.pdf-exporting td{
-    white-space:normal!important;word-break:break-word!important;
-    padding:8px 5px!important;line-height:1.12!important;vertical-align:middle!important;
-  }
-  body.pdf-exporting th{font-size:12.2px!important;font-weight:900!important;}
-  body.pdf-exporting td b{font-size:13.3px!important;}
-  body.pdf-exporting td:nth-child(1), body.pdf-exporting th:nth-child(1){width:3%!important;}
-  body.pdf-exporting td:nth-child(2), body.pdf-exporting th:nth-child(2){width:14%!important;}
-  body.pdf-exporting td:nth-child(3), body.pdf-exporting th:nth-child(3){width:4%!important;}
-  body.pdf-exporting td:nth-child(4), body.pdf-exporting th:nth-child(4),
-  body.pdf-exporting td:nth-child(5), body.pdf-exporting th:nth-child(5),
-  body.pdf-exporting td:nth-child(6), body.pdf-exporting th:nth-child(6),
-  body.pdf-exporting td:nth-child(7), body.pdf-exporting th:nth-child(7),
-  body.pdf-exporting td:nth-child(8), body.pdf-exporting th:nth-child(8){width:5.4%!important;}
-  body.pdf-exporting td:nth-child(9), body.pdf-exporting th:nth-child(9),
-  body.pdf-exporting td:nth-child(10), body.pdf-exporting th:nth-child(10),
-  body.pdf-exporting td:nth-child(11), body.pdf-exporting th:nth-child(11){width:7.0%!important;}
-  body.pdf-exporting td:nth-child(12), body.pdf-exporting th:nth-child(12){width:5.2%!important;}
-  body.pdf-exporting td:nth-child(13), body.pdf-exporting th:nth-child(13),
-  body.pdf-exporting td:nth-child(14), body.pdf-exporting th:nth-child(14){width:4.4%!important;}
-  body.pdf-exporting td:nth-child(15), body.pdf-exporting th:nth-child(15){width:5.4%!important;}
-  body.pdf-exporting th:last-child, body.pdf-exporting td:last-child{display:none!important;}
-}
-</style>
 
+  body.pdf-exporting.pdf-shreni .card.section {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 9px 10px !important;
+    page-break-before: auto !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    border: 1.3px solid #bfdbfe !important;
+    border-radius: 11px !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+  }
 
-<style id="compact-ranking-score-style">
-/* Compact wide ranking/score tables */
-#app table th, #app table td{vertical-align:middle}
-#app .tablewrap table{border-collapse:collapse}
-#app .tablewrap td{line-height:1.22}
+  body.pdf-exporting.pdf-shreni .card.section h2 {
+    font-size: 46px !important;
+    line-height: 1.02 !important;
+    margin: 0 0 2px 0 !important;
+    color: #0b3b66 !important;
+  }
 
-/* Engineer Ranking tab compactness */
-body:not(.pdf-exporting) #app h2 + .tablewrap table th,
-body:not(.pdf-exporting) #app h2 + .tablewrap table td{
-  padding:8px 8px;
-}
-body:not(.pdf-exporting) #app h2 + .tablewrap table td:nth-child(2){
-  min-width:130px;
-}
-body:not(.pdf-exporting) #app h2 + .tablewrap table td:nth-child(3),
-body:not(.pdf-exporting) #app h2 + .tablewrap table td:nth-child(9),
-body:not(.pdf-exporting) #app h2 + .tablewrap table td:nth-child(10){
-  white-space:nowrap;
+  body.pdf-exporting.pdf-shreni .clusterTag {
+    font-size: 22px !important;
+    padding: 4px 9px !important;
+  }
+
+  body.pdf-exporting.pdf-shreni .subline {
+    display: block !important;
+    font-size: 20px !important;
+    line-height: 1.02 !important;
+    font-weight: 900 !important;
+    margin-top: 1px !important;
+  }
+
+  body.pdf-exporting.pdf-shreni .pill {
+    display: inline-block !important;
+    font-size: 18px !important;
+    padding: 3px 7px !important;
+    line-height: 1.0 !important;
+    margin: 1px !important;
+    white-space: nowrap !important;
+  }
+
+  body.pdf-exporting.pdf-shreni .tablewrap {
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+    margin-top: 5px !important;
+  }
+
+  body.pdf-exporting.pdf-shreni table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    font-size: 17px !important;
+    background: #ffffff !important;
+  }
+
+  body.pdf-exporting.pdf-shreni th,
+  body.pdf-exporting.pdf-shreni td {
+    white-space: normal !important;
+    word-break: break-word !important;
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #e5edf8 !important;
+  }
+
+  body.pdf-exporting.pdf-shreni th {
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    background: #eaf4ff !important;
+    color: #0b3b66 !important;
+  }
+
+  body.pdf-exporting.pdf-shreni td b { font-size: 17px !important; }
+
+  /* Hide the Details/Action column in print */
+  body.pdf-exporting.pdf-shreni th:last-child,
+  body.pdf-exporting.pdf-shreni td:last-child {
+    display: none !important;
+  }
+
+  /* Column widths after hiding Action */
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(1),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(1) { width: 3% !important; }
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(2),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(2) { width: 13.5% !important; }
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(3),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(3) { width: 3.8% !important; }
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(4),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(4),
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(5),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(5),
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(6),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(6),
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(7),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(7),
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(8),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(8) { width: 5.1% !important; }
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(9),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(9),
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(10),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(10),
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(11),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(11) { width: 7.2% !important; }
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(12),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(12) { width: 5.1% !important; }
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(13),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(13),
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(14),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(14) { width: 4.6% !important; }
+  body.pdf-exporting.pdf-shreni .card.section table th:nth-child(15),
+  body.pdf-exporting.pdf-shreni .card.section table td:nth-child(15) { width: 5.8% !important; }
+
+  /* Main dashboard / other tabs: do not hide content */
+  body.pdf-exporting:not(.pdf-shreni) #app {
+    padding: 0 !important;
+  }
 }
 
-/* Score breakdown / category matrix compact cards */
-body:not(.pdf-exporting) #app .tablewrap td div,
-body:not(.pdf-exporting) #app .tablewrap td small{
-  line-height:1.15;
+@media screen {
+  #app .tablewrap table th { font-size: 12px; }
+  #app .tablewrap table td { font-size: 13px; line-height: 1.18; padding-top: 8px; padding-bottom: 8px; }
+  #app .tablewrap .bar { height: 8px !important; max-width: 115px; }
 }
-body:not(.pdf-exporting) #app .tablewrap td{
-  font-size:13px;
-}
-body:not(.pdf-exporting) #app .tablewrap th{
-  font-size:12px;
-}
-body:not(.pdf-exporting) #app .tablewrap .bar{
-  height:8px!important;
-  max-width:120px;
-}
-
-/* Reduce top cards height in these tabs */
-body:not(.pdf-exporting) #app .top3 .card,
-body:not(.pdf-exporting) #app .rankCard{
-  padding:16px!important;
-  min-height:auto!important;
-}
-body:not(.pdf-exporting) #app .top3 h2,
-body:not(.pdf-exporting) #app .rankCard h2{
-  font-size:22px!important;
-  line-height:1.15!important;
-}
-body:not(.pdf-exporting) #app .top3 .val,
-body:not(.pdf-exporting) #app .rankCard .val{
-  font-size:30px!important;
-}
-
-/* Balanced PDF: readable but no 9th category cut */
-@media print {
-  @page { size: A3 landscape; margin: 4mm; }
-  body.pdf-exporting .card.section{
-    width:82.65%!important;
-    transform:scale(1.21)!important;
-    transform-origin:top left!important;
-    padding:8px 10px!important;
-  }
-  body.pdf-exporting .card.section h2{
-    font-size:34px!important;
-    line-height:1.03!important;
-    margin-bottom:4px!important;
-  }
-  body.pdf-exporting .clusterTag{
-    font-size:13.3px!important;
-    padding:5px 11px!important;
-  }
-  body.pdf-exporting .subline{
-    font-size:12.2px!important;
-    font-weight:900!important;
-  }
-  body.pdf-exporting .pill{
-    font-size:14.5px!important;
-    padding:5px 9px!important;
-    line-height:1.05!important;
-    margin:1.5px!important;
-  }
-  body.pdf-exporting table{
-    font-size:13.3px!important;
-    table-layout:fixed!important;
-  }
-  body.pdf-exporting th{
-    font-size:12.2px!important;
-    padding:6px 4px!important;
-  }
-  body.pdf-exporting td{
-    font-size:13.3px!important;
-    padding:6px 4px!important;
-    line-height:1.10!important;
-  }
-  body.pdf-exporting td b{font-size:13.4px!important}
-}
-</style>
-
-
-<style id="back-button-compact-place">
-.backBtn{padding:12px 18px!important;min-width:105px!important}
 </style>
 
 </head><body class="login-locked">
@@ -1453,10 +1442,23 @@ function table(headers, rows){return `<div class="tablewrap"><table><thead><tr>$
 
 
 
+
 function exportCurrentViewPDF(){
   document.body.classList.add('pdf-exporting');
-  setTimeout(()=>{ window.print(); setTimeout(()=>document.body.classList.remove('pdf-exporting'),800); },100);
+  if(typeof active !== 'undefined' && active === 5){
+    document.body.classList.add('pdf-shreni');
+  } else {
+    document.body.classList.remove('pdf-shreni');
+  }
+  const cleanup = () => {
+    document.body.classList.remove('pdf-exporting');
+    document.body.classList.remove('pdf-shreni');
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+  requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
 }
+
 
 
 async function loadExternalScriptOnce(globalName, urls){
