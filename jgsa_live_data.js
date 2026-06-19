@@ -1,5 +1,5 @@
 window.JGSA_LIVE_DATA = {
-  "generatedAt": "2026-06-19T12:29:25.985321Z",
+  "generatedAt": "2026-06-19T16:21:09.888492Z",
   "date": "2026-06-19",
   "district": "SATNA",
   "sourceUrls": {
