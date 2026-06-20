@@ -269,17 +269,33 @@ def grade_text(g):
 
 def calc_category_score(items):
     started=len(items)
-    if not started: return {'score':0,'partA':0,'partB':0,'avgExpPct':0,'works':0,'completedPhy':0,'sanction':0,'booked':0}
-    comp_phy=0; sanc=0; book=0; pct_sum=0
+    if not started:
+        return {'score':0,'partA':0,'partB':0,'avgExpPct':0,'works':0,'completedPhy':0,'completed':0,'physical':0,'ongoing':0,'sanction':0,'booked':0,'ongoingSanction':0,'ongoingBooked':0}
+    comp=phy=ongo=0
+    total_sanc=total_book=ongo_sanc=ongo_book=0
+    pct_sum=0
     for w in items:
         c,p,o=status_flags(w.get('status',''), w.get('rawText',''))
-        if c or p: comp_phy += 1
-        sanc += w.get('sanctionAmount',0) or 0
-        book += w.get('bookedAmount',0) or 0
+        comp += int(c)
+        phy += int(p)
+        ongo += int(o)
+        total_sanc += w.get('sanctionAmount',0) or 0
+        total_book += w.get('bookedAmount',0) or 0
+        if o:
+            ongo_sanc += w.get('sanctionAmount',0) or 0
+            ongo_book += w.get('bookedAmount',0) or 0
         pct_sum += w.get('expPercent',0) or 0
+    comp_phy = comp + phy
     partA = min(5, (comp_phy/started)*5) if started else 0
-    partB = min(5, (book/sanc)*5) if sanc else min(5, (pct_sum/started)/100*5)
-    return {'score':round(partA+partB,2), 'partA':round(partA,2), 'partB':round(partB,2), 'avgExpPct':round(pct_sum/started,2), 'works':started, 'completedPhy':comp_phy, 'sanction':round(sanc,2), 'booked':round(book,2)}
+    if not started:
+        partB = 0
+    elif ongo:
+        partB = min(5, (ongo_book/ongo_sanc)*5) if ongo_sanc else 0
+    elif comp_phy >= started:
+        partB = 5
+    else:
+        partB = 0
+    return {'score':round(partA+partB,2), 'partA':round(partA,2), 'partB':round(partB,2), 'avgExpPct':round(pct_sum/started,2), 'works':started, 'completedPhy':comp_phy, 'completed':comp, 'physical':phy, 'ongoing':ongo, 'sanction':round(total_sanc,2), 'booked':round(total_book,2), 'ongoingSanction':round(ongo_sanc,2), 'ongoingBooked':round(ongo_book,2)}
 
 def calc_engineers(works):
     groups={}

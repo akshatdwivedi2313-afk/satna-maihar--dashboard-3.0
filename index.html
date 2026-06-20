@@ -493,6 +493,258 @@ body.login-locked{overflow:hidden}
 }
 </style>
 
+
+<style id="engineer-total-work-highlight-css">
+.totalWorkTag{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-left:8px;
+  padding:5px 12px;
+  border-radius:999px;
+  border:2px solid #2563eb;
+  background:linear-gradient(135deg,#dbeafe,#ecfeff);
+  color:#0b3b66;
+  font-size:16px;
+  font-weight:950;
+  box-shadow:0 8px 18px rgba(37,99,235,.16);
+  vertical-align:middle;
+}
+.totalWorkTag::before{
+  content:"📌";
+  font-size:14px;
+}
+@media print{
+  body.pdf-exporting.pdf-shreni .totalWorkTag{
+    font-size:22px !important;
+    padding:5px 12px !important;
+    border:2px solid #2563eb !important;
+    background:#dbeafe !important;
+    color:#0b3b66 !important;
+    font-weight:950 !important;
+    box-shadow:none !important;
+  }
+  body.pdf-exporting.pdf-shreni .totalWorkTag::before{
+    font-size:18px !important;
+  }
+}
+</style>
+
+
+<style id="shreni-total-ongoing-columns-css">
+@media print{
+  body.pdf-exporting.pdf-shreni table{font-size:13.5px !important;}
+  body.pdf-exporting.pdf-shreni th{font-size:12.4px !important;}
+  body.pdf-exporting.pdf-shreni th, body.pdf-exporting.pdf-shreni td{padding:5.5px 3.5px !important;}
+}
+</style>
+
+
+<style id="shreni-one-page-compact-css">
+.shreniFitTable{
+  width:100%;
+  overflow-x:hidden !important;
+}
+.shreniFitTable table{
+  width:100% !important;
+  min-width:0 !important;
+  table-layout:fixed !important;
+  font-size:11.6px !important;
+}
+.shreniFitTable th,
+.shreniFitTable td{
+  padding:6px 4px !important;
+  line-height:1.12 !important;
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow-wrap:anywhere !important;
+}
+.shreniFitTable th{
+  font-size:10.5px !important;
+  letter-spacing:.02em !important;
+}
+.shreniFitTable td{
+  vertical-align:middle !important;
+}
+.shreniFitTable td .dot{
+  margin-right:4px !important;
+}
+.shreniMini{
+  padding:6px 9px !important;
+  font-size:11px !important;
+  border-radius:10px !important;
+}
+.shreniFitTable th:nth-child(1), .shreniFitTable td:nth-child(1){width:2.6% !important;}
+.shreniFitTable th:nth-child(2), .shreniFitTable td:nth-child(2){width:11.5% !important;}
+.shreniFitTable th:nth-child(3), .shreniFitTable td:nth-child(3){width:3.4% !important;}
+.shreniFitTable th:nth-child(4), .shreniFitTable td:nth-child(4){width:3.8% !important;}
+.shreniFitTable th:nth-child(5), .shreniFitTable td:nth-child(5){width:4.2% !important;}
+.shreniFitTable th:nth-child(6), .shreniFitTable td:nth-child(6){width:5.4% !important;}
+.shreniFitTable th:nth-child(7), .shreniFitTable td:nth-child(7){width:4.2% !important;}
+.shreniFitTable th:nth-child(8), .shreniFitTable td:nth-child(8){width:4.2% !important;}
+.shreniFitTable th:nth-child(9), .shreniFitTable td:nth-child(9){width:6.3% !important;}
+.shreniFitTable th:nth-child(10), .shreniFitTable td:nth-child(10){width:6.3% !important;}
+.shreniFitTable th:nth-child(11), .shreniFitTable td:nth-child(11){width:6.3% !important;}
+.shreniFitTable th:nth-child(12), .shreniFitTable td:nth-child(12){width:6.3% !important;}
+.shreniFitTable th:nth-child(13), .shreniFitTable td:nth-child(13){width:6.6% !important;}
+.shreniFitTable th:nth-child(14), .shreniFitTable td:nth-child(14){width:4.6% !important;}
+.shreniFitTable th:nth-child(15), .shreniFitTable td:nth-child(15){width:4.4% !important;}
+.shreniFitTable th:nth-child(16), .shreniFitTable td:nth-child(16){width:4.4% !important;}
+.shreniFitTable th:nth-child(17), .shreniFitTable td:nth-child(17){width:5.0% !important;}
+.shreniFitTable th:nth-child(18), .shreniFitTable td:nth-child(18){width:4.5% !important;}
+
+@media (max-width: 1400px){
+  .shreniFitTable table{font-size:10.8px !important;}
+  .shreniFitTable th{font-size:9.8px !important;}
+  .shreniFitTable th,.shreniFitTable td{padding:5px 3px !important;}
+  .shreniMini{padding:5px 7px !important;font-size:10px !important;}
+}
+@media print{
+  body.pdf-exporting.pdf-shreni .shreniFitTable table{
+    width:100% !important;
+    min-width:0 !important;
+    table-layout:fixed !important;
+    font-size:12.6px !important;
+  }
+  body.pdf-exporting.pdf-shreni .shreniFitTable th{
+    font-size:11.5px !important;
+  }
+  body.pdf-exporting.pdf-shreni .shreniFitTable th,
+  body.pdf-exporting.pdf-shreni .shreniFitTable td{
+    padding:5.5px 3.5px !important;
+    line-height:1.10 !important;
+  }
+  body.pdf-exporting.pdf-shreni .shreniMini{
+    padding:5px 7px !important;
+    font-size:10.5px !important;
+  }
+}
+</style>
+
+
+<style id="shreni-total-rem-exp-compact-css">
+.shreniFitTable{
+  width:100%;
+  overflow-x:hidden !important;
+}
+.shreniFitTable table{
+  width:100% !important;
+  min-width:0 !important;
+  table-layout:fixed !important;
+  font-size:10.6px !important;
+}
+.shreniFitTable th,
+.shreniFitTable td{
+  padding:5px 3px !important;
+  line-height:1.08 !important;
+  white-space:normal !important;
+  overflow-wrap:anywhere !important;
+}
+.shreniFitTable th{
+  font-size:9.5px !important;
+  letter-spacing:.01em !important;
+}
+.shreniFitTable td .dot{ margin-right:3px !important; }
+.shreniMini{
+  padding:5px 7px !important;
+  font-size:10px !important;
+  border-radius:9px !important;
+}
+.shreniFitTable th:nth-child(1), .shreniFitTable td:nth-child(1){width:2.2% !important;}
+.shreniFitTable th:nth-child(2), .shreniFitTable td:nth-child(2){width:10.4% !important;}
+.shreniFitTable th:nth-child(3), .shreniFitTable td:nth-child(3){width:2.8% !important;}
+.shreniFitTable th:nth-child(4), .shreniFitTable td:nth-child(4){width:3.4% !important;}
+.shreniFitTable th:nth-child(5), .shreniFitTable td:nth-child(5){width:3.5% !important;}
+.shreniFitTable th:nth-child(6), .shreniFitTable td:nth-child(6){width:4.6% !important;}
+.shreniFitTable th:nth-child(7), .shreniFitTable td:nth-child(7){width:3.4% !important;}
+.shreniFitTable th:nth-child(8), .shreniFitTable td:nth-child(8){width:3.5% !important;}
+.shreniFitTable th:nth-child(9), .shreniFitTable td:nth-child(9){width:5.5% !important;}
+.shreniFitTable th:nth-child(10), .shreniFitTable td:nth-child(10){width:5.5% !important;}
+.shreniFitTable th:nth-child(11), .shreniFitTable td:nth-child(11){width:5.5% !important;}
+.shreniFitTable th:nth-child(12), .shreniFitTable td:nth-child(12){width:4.0% !important;}
+.shreniFitTable th:nth-child(13), .shreniFitTable td:nth-child(13){width:5.5% !important;}
+.shreniFitTable th:nth-child(14), .shreniFitTable td:nth-child(14){width:5.5% !important;}
+.shreniFitTable th:nth-child(15), .shreniFitTable td:nth-child(15){width:5.7% !important;}
+.shreniFitTable th:nth-child(16), .shreniFitTable td:nth-child(16){width:4.0% !important;}
+.shreniFitTable th:nth-child(17), .shreniFitTable td:nth-child(17){width:3.4% !important;}
+.shreniFitTable th:nth-child(18), .shreniFitTable td:nth-child(18){width:3.4% !important;}
+.shreniFitTable th:nth-child(19), .shreniFitTable td:nth-child(19){width:4.6% !important;}
+.shreniFitTable th:nth-child(20), .shreniFitTable td:nth-child(20){width:3.8% !important;}
+
+@media (max-width: 1450px){
+  .shreniFitTable table{font-size:9.9px !important;}
+  .shreniFitTable th{font-size:8.9px !important;}
+  .shreniFitTable th,.shreniFitTable td{padding:4.5px 2px !important;}
+  .shreniMini{padding:4px 6px !important;font-size:9px !important;}
+}
+@media print{
+  body.pdf-exporting.pdf-shreni .shreniFitTable table{
+    width:100% !important;
+    min-width:0 !important;
+    table-layout:fixed !important;
+    font-size:11.4px !important;
+  }
+  body.pdf-exporting.pdf-shreni .shreniFitTable th{
+    font-size:10.2px !important;
+  }
+  body.pdf-exporting.pdf-shreni .shreniFitTable th,
+  body.pdf-exporting.pdf-shreni .shreniFitTable td{
+    padding:4.8px 2.6px !important;
+    line-height:1.08 !important;
+  }
+}
+</style>
+
+
+<style id="jgsa-ready-premium-glass-blue">
+@media screen{
+  :root{--side:270px;--gap-left:14px}
+  body{background:radial-gradient(circle at 12% 8%,rgba(14,165,233,.20),transparent 28%),radial-gradient(circle at 88% 10%,rgba(37,99,235,.16),transparent 28%),linear-gradient(135deg,#e5f8ff 0%,#f2f7ff 54%,#ecfff6 100%)!important;color:#0f172a!important}
+  body::before{content:""!important;display:block!important;position:fixed!important;inset:0!important;z-index:-2!important;pointer-events:none!important;background:linear-gradient(90deg,rgba(37,99,235,.035) 1px,transparent 1px),linear-gradient(180deg,rgba(14,165,233,.030) 1px,transparent 1px)!important;background-size:46px 46px!important;opacity:.65!important}
+  .tabs{position:fixed!important;left:var(--gap-left)!important;top:14px!important;bottom:14px!important;width:var(--side)!important;z-index:120!important;display:flex!important;flex-direction:column!important;gap:3px!important;margin:0!important;padding:10px 10px 12px!important;overflow-y:auto!important;overflow-x:hidden!important;background:radial-gradient(circle at 18% 8%,rgba(14,165,233,.20),transparent 28%),linear-gradient(180deg,rgba(6,23,45,.95),rgba(8,43,76,.92))!important;border:1px solid rgba(112,209,255,.28)!important;box-shadow:16px 0 42px rgba(2,8,23,.22),inset -1px 0 0 rgba(255,255,255,.07)!important;backdrop-filter:blur(16px) saturate(150%)!important;scrollbar-width:thin!important;border-radius:0!important}
+  .tabs::before{content:"💧 JGSA Command"!important;display:flex!important;align-items:center!important;min-height:38px!important;padding:10px 11px!important;margin:0 0 5px 0!important;border-radius:16px!important;font-size:17px!important;line-height:1!important;font-weight:950!important;letter-spacing:-.03em!important;background:linear-gradient(135deg,#0ea5e9,#2563eb)!important;border:1px solid rgba(190,242,255,.55)!important;color:#fff!important;box-shadow:0 12px 26px rgba(37,99,235,.24),inset 0 1px 0 rgba(255,255,255,.20)!important}
+  .tabGroup{margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+  .tabGroupTitle{display:block!important;color:#9bdcf4!important;opacity:.95!important;font-size:8px!important;line-height:1!important;letter-spacing:1px!important;padding:2px 8px!important;margin:2px 0!important;text-transform:uppercase!important}
+  .tabGroupTitle::before,.tabGroupTitle::after{display:none!important}
+  .tabGroupBtns{display:flex!important;flex-direction:column!important;gap:3px!important}
+  .tab{width:100%!important;min-height:28px!important;height:28px!important;padding:5px 9px!important;justify-content:flex-start!important;text-align:left!important;border-radius:10px!important;font-size:11.2px!important;line-height:1.05!important;white-space:normal!important;font-weight:900!important;position:relative!important;background:rgba(255,255,255,.065)!important;color:#e0f2fe!important;border:1px solid rgba(255,255,255,.12)!important;box-shadow:none!important}
+  .tab:hover{background:rgba(255,255,255,.12)!important;border-color:rgba(125,211,252,.32)!important;transform:translateX(2px)!important}
+  .tab.active{background:linear-gradient(135deg,#0ea5e9,#2563eb)!important;color:#fff!important;border-color:rgba(255,255,255,.30)!important;box-shadow:0 12px 28px rgba(37,99,235,.32)!important}
+  .tab.active::before{content:""!important;position:absolute!important;left:-7px!important;top:7px!important;bottom:7px!important;width:3px!important;border-radius:999px!important;background:#67e8f9!important}
+  .tab.active::after{content:""!important;margin-left:auto!important;width:6px!important;height:6px!important;border-radius:999px!important;background:#bbf7d0!important;box-shadow:0 0 0 3px rgba(34,197,94,.13)!important}
+  main.wrap,main,.hero,.header{margin-left:304px!important;width:calc(100vw - 334px)!important;max-width:none!important}
+  .header,.hero{background:radial-gradient(circle at 8% 18%,rgba(45,212,191,.22),transparent 26%),linear-gradient(135deg,#06465a 0%,#0b75a6 48%,#2563eb 100%)!important;border:1px solid rgba(255,255,255,.30)!important;box-shadow:0 22px 52px rgba(15,23,42,.16),inset 0 -3px 0 rgba(34,211,238,.80)!important}
+  .header h1,.hero h1{color:#fff!important;text-shadow:0 3px 18px rgba(0,0,0,.20)!important}
+  .header .sub,.hero .sub,.hero p,.hero small{color:#e0f2fe!important}
+  .badge,.brand,.hero .brand{background:linear-gradient(135deg,#22c55e,#06b6d4)!important;color:#fff!important;border:1px solid rgba(255,255,255,.30)!important;box-shadow:0 12px 26px rgba(6,182,212,.22)!important}
+  .date,#updated,.updated{background:rgba(255,255,255,.17)!important;color:#fff!important;border:1px solid rgba(255,255,255,.26)!important}
+  .filters,.card,.section,.kpi,.zilaCard,.actionPanel{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(248,252,255,.84))!important;color:#0f172a!important;border:1px solid rgba(255,255,255,.88)!important;box-shadow:0 12px 32px rgba(15,23,42,.08)!important;backdrop-filter:blur(14px) saturate(140%)!important}
+  .filters{position:relative!important;top:auto!important}
+  .card h2,.section h2,.card h3,.section h3,.card b,.section b,b{color:#0f172a!important}
+  .label,small,.muted,.subline{color:#64748b!important}
+  .val{color:#123b7a!important;text-shadow:none!important}
+  select,input{background:#fff!important;color:#0f172a!important;border:1px solid #cbe1f7!important;box-shadow:0 8px 18px rgba(15,23,42,.055)!important}
+  input::placeholder{color:#64748b!important} option{background:#fff!important;color:#0f172a!important}
+  .backBtn,.miniBtn{background:linear-gradient(135deg,#075985,#2563eb)!important;color:#fff!important;border:1px solid rgba(255,255,255,.25)!important}
+  .themeInlineBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:170px!important;background:linear-gradient(135deg,#e0f2fe,#fff)!important;color:#075985!important;border:1px solid #bae6fd!important}
+  .commandHero{background:radial-gradient(circle at 10% 18%,rgba(56,189,248,.22),transparent 24%),linear-gradient(135deg,#075985 0%,#0f766e 50%,#2563eb 100%)!important;color:#fff!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:0 20px 48px rgba(15,23,42,.16)!important}
+  .commandHero h2,.commandHero b{color:#fff!important}.commandHero p{color:#e0f2fe!important}.commandStats div{background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.28)!important}.commandStats b{color:#fff!important}.commandStats span{color:#dbeafe!important}.heroActions .btn{background:#fff!important;color:#0f172a!important}
+  .actionItem{background:#f8fbff!important;border:1px solid #dbeafe!important}.actionItem b{color:#123b7a!important}.actionItem span{color:#475569!important}
+  .tablewrap{background:#fff!important;border:1px solid #d7e6f6!important;box-shadow:0 10px 28px rgba(15,23,42,.07)!important} table{background:#fff!important} th{background:linear-gradient(180deg,#edf7ff,#dbeafe)!important;color:#102a4c!important;border-color:#d7e9fb!important} td{color:#172033!important;border-color:#e7eef6!important} tbody tr:nth-child(even){background:#f8fbff!important} tbody tr:hover{background:#e9f7ff!important;box-shadow:inset 4px 0 0 #0ea5e9!important}
+  .pill,.clusterTag,.totalWorkTag{background:linear-gradient(180deg,#eff6ff,#e0f2fe)!important;border:1px solid #b8d7ff!important;color:#075985!important}.score{color:#047857!important;text-shadow:none!important}
+  .sidebarCollapseBtn{display:grid!important;position:fixed!important;left:282px!important;top:118px!important;z-index:999999!important;width:42px!important;height:42px!important;place-items:center!important;border-radius:50%!important;background:linear-gradient(135deg,#0ea5e9,#2563eb)!important;color:#fff!important;border:3px solid #fff!important;font-size:25px!important;font-weight:950!important;box-shadow:0 10px 24px rgba(37,99,235,.38),0 0 0 4px rgba(14,165,233,.15)!important;cursor:pointer!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+  body.sidebar-collapsed .tabs{transform:translateX(-115%)!important;pointer-events:none!important} body.sidebar-collapsed .sidebarCollapseBtn{left:18px!important;background:linear-gradient(135deg,#16a34a,#0ea5e9)!important} body.sidebar-collapsed main.wrap,body.sidebar-collapsed main,body.sidebar-collapsed .hero,body.sidebar-collapsed .header{margin-left:auto!important;width:auto!important;max-width:1500px!important}
+  .themeFloatingToggle,.themeSwitchPanel,.themeTopBtn{display:none!important}
+  .login-screen{background:radial-gradient(circle at 15% 25%,rgba(15,118,110,.30),transparent 32%),radial-gradient(circle at 86% 20%,rgba(37,99,235,.30),transparent 34%),linear-gradient(135deg,#0f766e 0%,#0b84a5 46%,#2563eb 100%)!important}
+  .login-card{background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(219,242,249,.78))!important;border:1px solid rgba(125,211,252,.62)!important;box-shadow:0 0 32px rgba(56,189,248,.18),0 24px 70px rgba(15,23,42,.22)!important}.login-card h2{color:#10334d!important}.login-card .login-sub{color:#718096!important}.login-field label{color:#334155!important}.login-field input{background:#385b78!important;color:#fff!important;border:1px solid rgba(125,211,252,.50)!important}
+  body.theme-dark{background:linear-gradient(135deg,#020617,#071527 55%,#081d2e)!important;color:#e5edf8!important} body.theme-dark .filters,body.theme-dark .card,body.theme-dark .section,body.theme-dark .kpi,body.theme-dark .zilaCard,body.theme-dark .actionPanel{background:linear-gradient(180deg,rgba(15,30,52,.94),rgba(15,23,42,.88))!important;color:#e5edf8!important;border-color:rgba(148,163,184,.24)!important} body.theme-dark .card h2,body.theme-dark .section h2,body.theme-dark .card h3,body.theme-dark .section h3,body.theme-dark b{color:#f8fafc!important} body.theme-dark .label,body.theme-dark small,body.theme-dark .muted,body.theme-dark .subline{color:#a9b9cf!important} body.theme-dark select,body.theme-dark input{background:#13243b!important;color:#e5edf8!important;border-color:rgba(148,163,184,.30)!important} body.theme-dark table,body.theme-dark .tablewrap{background:#0f1e33!important} body.theme-dark th{background:#183858!important;color:#e0f2fe!important} body.theme-dark td{color:#e5edf8!important;border-color:rgba(148,163,184,.18)!important} body.theme-dark tbody tr:nth-child(even){background:#10243d!important} body.theme-dark tbody tr:hover{background:#123456!important} body.theme-dark .pill,body.theme-dark .clusterTag,body.theme-dark .totalWorkTag{background:#102c4b!important;border-color:#1d4ed8!important;color:#dbeafe!important} body.theme-dark .themeInlineBtn{background:linear-gradient(135deg,#10243d,#1d4ed8)!important;color:#fff!important} body.theme-dark .val{color:#f8fafc!important}
+  @media(max-height:760px){.tabs{padding:8px 9px 10px!important;gap:2px!important}.tabs::before{font-size:16px!important;min-height:34px!important;padding:8px 10px!important;margin-bottom:3px!important}.tabGroupTitle{font-size:7.5px!important;padding:1px 7px!important;margin:1px 0!important}.tabGroupBtns{gap:2px!important}.tab{min-height:26px!important;height:26px!important;padding:4px 8px!important;font-size:10.8px!important;border-radius:9px!important}}
+  @media(max-width:1200px){:root{--side:248px}.tabs{width:248px!important}main.wrap,main,.hero,.header{margin-left:284px!important;width:calc(100vw - 308px)!important}.sidebarCollapseBtn{left:268px!important}}
+  @media(max-width:979px){.tabs{position:relative!important;width:auto!important;left:auto!important;top:auto!important;bottom:auto!important}main.wrap,main,.hero,.header{margin-left:auto!important;width:auto!important}.sidebarCollapseBtn{right:14px!important;left:auto!important;bottom:76px!important;top:auto!important}}
+}
+@media print{.sidebarCollapseBtn{display:none!important}}
+</style>
+
 </head><body class="login-locked">
 
 <div id="loginScreen" class="login-screen" role="dialog" aria-modal="true" aria-label="Dashboard Login">
@@ -516,12 +768,14 @@ body.login-locked{overflow:hidden}
 <div id="dashboardContent" style="display:none">
 
 <header class="header"><div class="headrow"><div><h1>जल गंगा जल संवर्धन अभियान 2026 - सतना एवं मैहर डैशबोर्ड</h1><div class="sub">जनपद सारांश • उपयंत्री रैंकिंग • JGSA Score • Critical कार्य • सम्पूर्ण सूची • Source: Live JGSA Dashboard + Work Monitor + Official Block Ranking</div></div><div class="badge">SRDM ZP SATNA</div><div class="date" id="updated">Updated: —</div></div></header>
+<button id="sidebarCollapseBtn" class="sidebarCollapseBtn" type="button" onclick="toggleSidebarMenu()" title="Hide menu">←</button>
 <main class="wrap">
 <nav class="tabs" id="tabs"></nav>
 <div class="filters">
   <select id="districtFilter"><option value="">All District</option><option value="SATNA">Satna</option><option value="MAIHAR">Maihar</option></select>
   <select id="janpadFilter"><option value="">All Janpad</option></select>
   <select id="engineerFilter"><option value="">All Engineer</option></select>
+  <select id="scoreSortFilter"><option value="">Score Sort</option><option value="scoreDesc">Score High → Low</option><option value="scoreAsc">Score Low → High</option></select>
   <select id="statusFilter"><option value="">All Status</option><option value="ONGOING">Ongoing</option><option value="COMPLETED">Completed</option><option value="PHYSICALLY COMPLETED">Physically Completed</option></select>
   <select id="expFilter"><option value="">All Exp %</option><option value="zero">0% Exp</option><option value="lt25">&lt; 30%</option><option value="25_50">30% – 50%</option><option value="50_75">50% – 75%</option><option value="75_90">75% – 90%</option><option value="ge90">≥ 90%</option></select>
   <input id="search" placeholder="Search work / engineer / GP / code">
@@ -529,6 +783,7 @@ body.login-locked{overflow:hidden}
   <button class="btn" onclick="exportCurrentViewPDF()">Export Current View PDF</button>
   <button class="btn" onclick="exportCurrentViewPPTX()">Export Current View PPTX</button>
   <button class="btn" onclick="downloadCSV()">Export CSV</button>
+  <button id="themeInlineBtn" class="btn themeInlineBtn" type="button" onclick="toggleThemeMode()">🌙 Dark Mode</button>
 </div>
 <div id="app"></div>
 </main>
@@ -721,6 +976,7 @@ let selectedBreakdown=null;
 let workMonitorPage=1;
 const fmt=n=>Number(n||0).toLocaleString('en-IN');
 const money=n=>'₹'+(Number(n||0)/100000).toFixed(2)+' लाख';
+const moneyL=n=>'₹'+(Number(n||0)/100000).toFixed(2)+'L';
 const moneyCr=n=>'₹'+(Number(n||0)/10000000).toFixed(2)+' Cr';
 const moneySmartShreni=(n,isSingle)=>isSingle?money(n):moneyCr(n);
 const pct=n=>(Number(n||0)).toFixed(1)+'%';
@@ -730,6 +986,20 @@ function normType(t){
   return x;
 }
 if(Array.isArray(D.works)) D.works.forEach(w=>{ w.workType = normType(w.workType); });
+function gapFYStart(w){
+  const y=String((w&&w.finYear)||(w&&w.financialYear)||(w&&w.year)||'');
+  const m=y.match(/(20\d{2})\s*[-–]\s*(20\d{2}|\d{2})/);
+  return m?Number(m[1]):null;
+}
+function dashboardAllowedWork(w){
+  const t=normType(w&&w.workType);
+  if(t==='Gap Filling in Plantation'){
+    const y=gapFYStart(w);
+    return y===null || y<=2021; // Gap Filling: only up to FY 2021-22
+  }
+  return true;
+}
+if(Array.isArray(D.works)) D.works = D.works.filter(dashboardAllowedWork);
 if(Array.isArray(D.engineerRanking)) D.engineerRanking.forEach(e=>{ if(Array.isArray(e.categories)) e.categories.forEach(c=>{ c.category = normType(c.category); }); });
 const works=()=>D.works||[]; const blocks=()=>D.blockRankingInternal||D.blockRanking||[]; const summ=()=>D.summary||{};
 
@@ -811,6 +1081,7 @@ function init(){
   document.getElementById('districtFilter').onchange=()=>{workMonitorPage=1; updateJanpadOptions(); updateEngineerOptions(); render();};
   document.getElementById('janpadFilter').onchange=()=>{workMonitorPage=1; updateEngineerOptions(); render();};
   document.getElementById('engineerFilter').onchange=()=>{workMonitorPage=1; render();};
+  document.getElementById('scoreSortFilter').onchange=()=>{workMonitorPage=1; render();};
   document.getElementById('statusFilter').onchange=()=>{workMonitorPage=1; render();};
   document.getElementById('expFilter').onchange=()=>{workMonitorPage=1; render();};
   document.getElementById('search').oninput=()=>{workMonitorPage=1; render();};
@@ -819,6 +1090,7 @@ function init(){
 function currentDistrict(){return document.getElementById('districtFilter').value}
 function currentJanpad(){return document.getElementById('janpadFilter').value}
 function currentEngineer(){return document.getElementById('engineerFilter')?.value||''}
+function currentScoreSort(){return document.getElementById('scoreSortFilter')?.value||''}
 function currentStatus(){return document.getElementById('statusFilter')?.value||''}
 function currentExpRange(){return document.getElementById('expFilter')?.value||''}
 function currentSearch(){return document.getElementById('search').value.toLowerCase().trim()}
@@ -931,7 +1203,7 @@ function openVerificationBreakdown(name){
 function fblocks(){let q=currentSearch(), arr=calcBlocks(fworks()); return arr.filter(b=>matchSearch(b,q))}
 function fengs(){
 let q=currentSearch();
-let baseWorks=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q));
+let baseWorks=works().filter(w=>passDistrictBlock(w)&&passExp(w)&&matchSearch(w,q));
 let ranked=calcEngineers(baseWorks);
 return ranked.filter(e=>passEngineer({engineer:e.engineer}));
 }
@@ -964,7 +1236,28 @@ function expBucketCountsForEngineer(engineerName){
 }
 
 function statusFlags(w){let s=String(w.status||'').trim().toUpperCase(); let phys=(s==='PHYSICALLY COMPLETED')||s.includes('PHYSICALLY COMPLETED')||s.includes('PHYCS')||s.includes('भौतिक'); let comp=!phys&&((s==='COMPLETED')||s.includes('COMPLETED')||s==='COMPLETE'||s.includes('पूर्ण')); let ongoing=(s==='ONGOING')||s.includes('ONGOING')||s.includes('प्रगतिरत')||s.includes('IN PROGRESS')||s.includes('चालू'); return {comp,phys,ongoing}}
-function calcCategory(items){let started=items.length; if(!started) return {score:0,partA:0,partB:0,avgExpPct:0,works:0,completedPhy:0,completed:0,physical:0,ongoing:0,sanction:0,booked:0}; let completed=0, physical=0, ongoing=0, completedPhy=0, sanction=0, booked=0, pctSum=0; items.forEach(w=>{let f=statusFlags(w); completed+=f.comp?1:0; physical+=f.phys?1:0; ongoing+=f.ongoing?1:0; completedPhy+=(f.comp||f.phys)?1:0; sanction+=Number(w.sanctionAmount||0); booked+=Number(w.bookedAmount||0); pctSum+=Number(w.expPercent||0)}); let partA=Math.min(5,(completedPhy/started)*5); let partB=sanction?Math.min(5,(booked/sanction)*5):Math.min(5,(pctSum/started)/100*5); return {score:+(partA+partB).toFixed(2),partA:+partA.toFixed(2),partB:+partB.toFixed(2),avgExpPct:+(pctSum/started).toFixed(2),works:started,completedPhy,completed,physical,ongoing,sanction:+sanction.toFixed(2),booked:+booked.toFixed(2)} }
+function calcCategory(items){
+  let started=items.length;
+  if(!started) return {score:0,partA:0,partB:0,avgExpPct:0,works:0,completedPhy:0,completed:0,physical:0,ongoing:0,sanction:0,booked:0,ongoingSanction:0,ongoingBooked:0};
+  let completed=0, physical=0, ongoing=0, completedPhy=0, sanction=0, booked=0, ongoingSanction=0, ongoingBooked=0, pctSum=0;
+  items.forEach(w=>{
+    let f=statusFlags(w);
+    completed+=f.comp?1:0;
+    physical+=f.phys?1:0;
+    ongoing+=f.ongoing?1:0;
+    completedPhy+=(f.comp||f.phys)?1:0;
+    sanction+=Number(w.sanctionAmount||0);
+    booked+=Number(w.bookedAmount||0);
+    if(f.ongoing){
+      ongoingSanction+=Number(w.sanctionAmount||0);
+      ongoingBooked+=Number(w.bookedAmount||0);
+    }
+    pctSum+=Number(w.expPercent||0);
+  });
+  let partA=Math.min(5,(completedPhy/started)*5);
+  let partB=calcPartBOfficial(started,completed,physical,ongoing,ongoingBooked,ongoingSanction);
+  return {score:+(partA+partB).toFixed(2),partA:+partA.toFixed(2),partB:+partB.toFixed(2),avgExpPct:+(pctSum/started).toFixed(2),works:started,completedPhy,completed,physical,ongoing,sanction:+sanction.toFixed(2),booked:+booked.toFixed(2),ongoingSanction:+ongoingSanction.toFixed(2),ongoingBooked:+ongoingBooked.toFixed(2)}
+}
 function buildCategoryBreakdown(items){let totalSanction=items.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let by={}; items.forEach(w=>{let k=normType(w.workType)||'Uncategorised'; (by[k]||(by[k]=[])).push(w)}); let out=[]; Object.entries(by).forEach(([category,rows])=>{let c=calcCategory(rows); let weight=totalSanction?(c.sanction/totalSanction)*100:(items.length?c.works/items.length*100:0); out.push({...c,category,weight:+weight.toFixed(2),weighted:+((weight/100)*c.score).toFixed(4),grade:grade(c.score)})}); return out.sort((a,b)=>b.weight-a.weight)}
 function calcEngineers(items){let groups={}; items.forEach(w=>{let e=w.engineer||'Unmapped'; (groups[e]||(groups[e]=[])).push(w)}); let out=[]; Object.entries(groups).forEach(([engineer,rows])=>{let cats=buildCategoryBreakdown(rows); let score=+(cats.reduce((a,c)=>a+c.weight/100*c.score,0)).toFixed(2); let g=grade(score); let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0); let flags=rows.map(statusFlags); let completed=flags.filter(x=>x.comp).length; let physical=flags.filter(x=>x.phys).length; let ongoing=flags.filter(x=>x.ongoing).length; let gp=new Set(rows.map(w=>w.panchayat).filter(Boolean)).size; let blocks=[...new Set(rows.map(w=>String(w.block||'').toUpperCase()).filter(Boolean))].join(', '); out.push({engineer,janpad:blocks,works:rows.length,completed,physicalCompleted:physical,ongoing,needsVerification:rows.filter(w=>w.needsVerification).length,score,grade:g,gradeText:gradeText(g),avgBookedPct:sanction?booked/sanction*100:0,sanction,booked,categories:cats,gpCount:gp})}); out.sort((a,b)=>b.score-a.score || a.needsVerification-b.needsVerification || b.works-a.works); out.forEach((x,i)=>x.rank=i+1); let byJan={}; out.forEach(x=>{let primary=String(x.janpad||'').split(',')[0].trim()||'UNKNOWN'; (byJan[primary]||(byJan[primary]=[])).push(x); x.primaryJanpad=primary}); Object.values(byJan).forEach(arr=>arr.sort((a,b)=>b.score-a.score || a.needsVerification-b.needsVerification || b.works-a.works).forEach((x,i)=>x.janpadRank=i+1)); return out}
 function calcBlocks(items){let groups={}; items.forEach(w=>{let b=String(w.block||'Unknown').toUpperCase(); (groups[b]||(groups[b]=[])).push(w)}); let out=[]; Object.entries(groups).forEach(([block,rows])=>{let cats=buildCategoryBreakdown(rows); let score=+(cats.reduce((a,c)=>a+c.weight/100*c.score,0)).toFixed(2); let g=grade(score); let sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0); let booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0); let flags=rows.map(statusFlags); out.push({block,works:rows.length,completed:flags.filter(x=>x.comp).length,physicalCompleted:flags.filter(x=>x.phys).length,ongoing:flags.filter(x=>x.ongoing).length,needsVerification:rows.filter(w=>w.needsVerification).length,score,grade:g,gradeText:gradeText(g),avgBookedPct:sanction?booked/sanction*100:0,sanction,booked,categories:cats,gpCount:new Set(rows.map(w=>w.panchayat).filter(Boolean)).size})}); out.sort((a,b)=>b.score-a.score); out.forEach((x,i)=>x.rank=i+1); return out}
@@ -1087,6 +1380,14 @@ function engineerTable(rows){return table(['#','उपयंत्री','Janpa
 function cap5(n){return Math.max(0,Math.min(5,Number(n||0)));}
 function calcPartAFromCounts(completed,physical,works){return cap5(works?((Number(completed||0)+Number(physical||0))/Number(works||0))*5:0);}
 function calcPartBFromMoney(booked,sanction){return cap5(sanction?(Number(booked||0)/Number(sanction||0))*5:0);}
+function calcPartBOfficial(totalWorks,completed,physical,ongoingWorks,ongoingBooked,ongoingSanction){
+  totalWorks=Number(totalWorks||0); completed=Number(completed||0); physical=Number(physical||0);
+  ongoingWorks=Number(ongoingWorks||0); ongoingBooked=Number(ongoingBooked||0); ongoingSanction=Number(ongoingSanction||0);
+  if(!totalWorks) return 0;
+  if(ongoingWorks>0) return cap5(ongoingSanction?(ongoingBooked/ongoingSanction)*5:0);
+  if((completed+physical)>=totalWorks) return 5;
+  return 0;
+}
 function catForEngineer(e,cat){return (e.categories||[]).find(c=>normType(c.category)===cat) || {category:cat,score:0,works:0,completed:0,physical:0,ongoing:0,completedPhy:0,sanction:0,booked:0,partA:0,partB:0,weight:0,avgExpPct:0};}
 function engineerScorecard(){
   let rows=fengs();
@@ -1108,18 +1409,22 @@ function engineerScorecard(){
 
 function shreniDetailRows(){
   const q=currentSearch();
-  const base=works().filter(w=>passDistrictBlock(w)&&passEngineer(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q));
-  const groups={};
+  const statusSelected=!!currentStatus();
+  const baseAll=works().filter(w=>passDistrictBlock(w)&&passEngineer(w)&&passExp(w)&&matchSearch(w,q));
+  const baseDisplay=baseAll.filter(w=>passStatus(w));
+  const groupsAll={};
+  const groupsDisplay={};
   const engineers={};
-  base.forEach(w=>{
+
+  baseAll.forEach(w=>{
     const engineer=String(w.engineer||'Unmapped');
     engineers[engineer]||(engineers[engineer]={engineer,janpads:new Set(),gps:new Set()});
     engineers[engineer].janpads.add(String(w.block||'').toUpperCase());
     if(w.panchayat) engineers[engineer].gps.add(String(w.panchayat));
     const category=normType(w.workType)||'Uncategorised';
     const key=engineer+'||'+category;
-    if(!groups[key]) groups[key]={engineer,category,janpads:new Set(),gps:new Set(),works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0};
-    const g=groups[key], f=statusFlags(w);
+    if(!groupsAll[key]) groupsAll[key]={engineer,category,janpads:new Set(),gps:new Set(),works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0,totalSanction:0,totalBooked:0};
+    const g=groupsAll[key], f=statusFlags(w);
     g.janpads.add(String(w.block||'').toUpperCase());
     if(w.panchayat) g.gps.add(String(w.panchayat));
     g.works++;
@@ -1127,23 +1432,57 @@ function shreniDetailRows(){
     g.physical+=f.phys?1:0;
     g.ongoing+=f.ongoing?1:0;
     g.needs+=w.needsVerification?1:0;
-    g.sanction+=Number(w.sanctionAmount||0);
-    g.booked+=Number(w.bookedAmount||0);
-    g.remaining+=remainingExp(w);
+    g.totalSanction+=Number(w.sanctionAmount||0);
+    g.totalBooked+=Number(w.bookedAmount||0);
+    if(f.ongoing){
+      g.sanction+=Number(w.sanctionAmount||0);
+      g.booked+=Number(w.bookedAmount||0);
+      g.remaining+=remainingExp(w);
+    }
   });
 
-  // हर engineer के लिए हर fixed JGSA category दिखानी है — चाहे works 0 हों.
-  // इससे Ashish Tiwari जैसे engineer के लिए Repair & Maintenance etc. zero rows भी दिखेंगी.
+  baseDisplay.forEach(w=>{
+    const engineer=String(w.engineer||'Unmapped');
+    const category=normType(w.workType)||'Uncategorised';
+    const key=engineer+'||'+category;
+    if(!groupsDisplay[key]) groupsDisplay[key]={works:0,completed:0,physical:0,ongoing:0,needs:0,gps:new Set(),janpads:new Set()};
+    const g=groupsDisplay[key], f=statusFlags(w);
+    g.works++;
+    g.completed+=f.comp?1:0;
+    g.physical+=f.phys?1:0;
+    g.ongoing+=f.ongoing?1:0;
+    g.needs+=w.needsVerification?1:0;
+    g.janpads.add(String(w.block||'').toUpperCase());
+    if(w.panchayat) g.gps.add(String(w.panchayat));
+  });
+
   const rows=[];
   Object.values(engineers).forEach(meta=>{
     ALL_CATEGORIES.forEach(category=>{
       const key=meta.engineer+'||'+category;
-      const g=groups[key] || {engineer:meta.engineer,category,janpads:new Set(meta.janpads),gps:new Set(),works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0};
-      g.partA=calcPartAFromCounts(g.completed,g.physical,g.works);
-      g.partB=calcPartBFromMoney(g.booked,g.sanction);
+      const all=groupsAll[key] || {engineer:meta.engineer,category,janpads:new Set(meta.janpads),gps:new Set(),works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0,totalSanction:0,totalBooked:0};
+      const disp=groupsDisplay[key];
+      const g={
+        engineer:meta.engineer,
+        category,
+        janpads:all.janpads,
+        gps:(disp&&disp.gps&&disp.gps.size)?disp.gps:all.gps,
+        works:disp ? disp.works : (statusSelected ? 0 : all.works),
+        completed:disp ? disp.completed : (statusSelected ? 0 : all.completed),
+        physical:disp ? disp.physical : (statusSelected ? 0 : all.physical),
+        ongoing:disp ? disp.ongoing : (statusSelected ? 0 : all.ongoing),
+        needs:disp ? disp.needs : (statusSelected ? 0 : all.needs),
+        sanction:all.sanction,
+        booked:all.booked,
+        remaining:all.remaining,
+        totalSanction:all.totalSanction,
+        totalBooked:all.totalBooked
+      };
+      g.partA=calcPartAFromCounts(all.completed,all.physical,all.works);
+      g.partB=calcPartBOfficial(all.works,all.completed,all.physical,all.ongoing,all.booked,all.sanction);
       g.totalMarks=+(g.partA+g.partB).toFixed(2);
       g.bookedPct=g.sanction?g.booked/g.sanction*100:0;
-      const jset=(g.janpads&&g.janpads.size)?g.janpads:meta.janpads;
+      const jset=(all.janpads&&all.janpads.size)?all.janpads:meta.janpads;
       g.janpad=[...jset].join(', ');
       g.gpCount=(g.gps&&g.gps.size)?g.gps.size:0;
       rows.push(g);
@@ -1151,6 +1490,7 @@ function shreniDetailRows(){
   });
   return rows.sort((a,b)=>String(a.engineer).localeCompare(String(b.engineer),'hi') || ALL_CATEGORIES.indexOf(a.category)-ALL_CATEGORIES.indexOf(b.category));
 }
+
 function shreniWiseEngineerDetails(){
   const rows=shreniDetailRows();
   const totalWorks=rows.reduce((a,r)=>a+r.works,0), totalSanction=rows.reduce((a,r)=>a+r.sanction,0), totalBooked=rows.reduce((a,r)=>a+r.booked,0), totalRemaining=rows.reduce((a,r)=>a+r.remaining,0);
@@ -1158,14 +1498,21 @@ function shreniWiseEngineerDetails(){
   rows.forEach(r=>{ (grouped[r.engineer]||(grouped[r.engineer]=[])).push(r); });
 
   const q=currentSearch();
-  const rankBase=works().filter(w=>passDistrictBlock(w)&&passStatus(w)&&passExp(w)&&matchSearch(w,q));
+  const rankBase=works().filter(w=>passDistrictBlock(w)&&passEngineer(w)&&passExp(w)&&matchSearch(w,q));
   const engineerMeta={};
   calcEngineers(rankBase).forEach(e=>{ engineerMeta[e.engineer]=e; });
 
   const selectedEngineers=Object.keys(grouped);
   const selectedEngineerLabel = selectedEngineers.length===1 ? selectedEngineers[0] : 'All';
+  const scoreSort=currentScoreSort();
+  let engineerEntries=Object.entries(grouped);
+  if(scoreSort==='scoreAsc'){
+    engineerEntries.sort((a,b)=>Number(engineerMeta[a[0]]?.score||0)-Number(engineerMeta[b[0]]?.score||0) || String(a[0]).localeCompare(String(b[0]),'hi'));
+  } else if(scoreSort==='scoreDesc'){
+    engineerEntries.sort((a,b)=>Number(engineerMeta[b[0]]?.score||0)-Number(engineerMeta[a[0]]?.score||0) || String(a[0]).localeCompare(String(b[0]),'hi'));
+  }
 
-  const engineerCards=Object.entries(grouped).map(([engineer,items],idx)=>{
+  const engineerCards=engineerEntries.map(([engineer,items],idx)=>{
     const ew=items.reduce((a,r)=>a+r.works,0), es=items.reduce((a,r)=>a+r.sanction,0), eb=items.reduce((a,r)=>a+r.booked,0), er=items.reduce((a,r)=>a+r.remaining,0);
     const ej=[...new Set(items.map(r=>r.janpad).filter(Boolean))].join(', ');
     const meta=engineerMeta[engineer] || {};
@@ -1186,19 +1533,23 @@ function shreniWiseEngineerDetails(){
       fmt(r.physical),
       fmt(r.ongoing),
       fmt(r.needs),
-      money(r.sanction),
-      money(r.booked),
-      money(r.remaining),
+      moneyL(r.totalSanction || 0),
+      moneyL(r.totalBooked || 0),
+      moneyL(Math.max(0, Number(r.totalSanction||0)-Number(r.totalBooked||0))),
+      pct((r.totalSanction||0)?(Number(r.totalBooked||0)/Number(r.totalSanction||0)*100):0),
+      moneyL(r.sanction),
+      moneyL(r.booked),
+      moneyL(r.remaining),
       pct(r.bookedPct),
       `<b style="color:#2563eb">${r.partA.toFixed(2)}</b>`,
       `<b style="color:#16a34a">${r.partB.toFixed(2)}</b>`,
       `<b class="score">${r.totalMarks.toFixed(2)}/10</b>`,
-      `<button class="miniBtn" onclick="openEngineerCategory('${escapeAttr(r.engineer)}','${escapeAttr(r.category)}')">Details</button>`
+      `<button class="miniBtn shreniMini" onclick="openEngineerCategory('${escapeAttr(r.engineer)}','${escapeAttr(r.category)}')">View</button>`
     ]);
     return `<div class="card section" style="overflow:hidden">
       <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px">
         <div>
-          <h2 style="margin:0">${engineer} <span class="clusterTag">क्लस्टर: ${clusterName}</span></h2>
+          <h2 style="margin:0">${engineer} <span class="clusterTag">क्लस्टर: ${clusterName}</span> <span class="totalWorkTag">कुल कार्य: ${fmt(ew)}</span></h2>
           <span class="subline">${ej||'All Janpad'} • Janpad Rank ${fmt(janpadRank)} • Score ${scoreVal}/10</span>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -1218,12 +1569,16 @@ function shreniWiseEngineerDetails(){
           <span class="pill">75–90% Ong. Works ${fmt(expB.b7590)}</span>
           <span class="pill">≥90% Ong. Works ${fmt(expB.b90)}</span>
           <span class="pill">Works ${fmt(ew)}</span>
-          <span class="pill">Sanction ${money(es)}</span>
-          <span class="pill">Booked ${money(eb)}</span>
-          <span class="pill">Remaining ${money(er)}</span>
+          <span class="pill">Total Sanction ${money(items.reduce((a,r)=>a+Number(r.totalSanction||0),0))}</span>
+          <span class="pill">Total Booked ${money(items.reduce((a,r)=>a+Number(r.totalBooked||0),0))}</span>
+          <span class="pill">Total Rem. ${money(Math.max(0,items.reduce((a,r)=>a+Number(r.totalSanction||0),0)-items.reduce((a,r)=>a+Number(r.totalBooked||0),0)))}</span>
+          <span class="pill">Exp % ${pct(items.reduce((a,r)=>a+Number(r.totalSanction||0),0)?items.reduce((a,r)=>a+Number(r.totalBooked||0),0)/items.reduce((a,r)=>a+Number(r.totalSanction||0),0)*100:0)}</span>
+          <span class="pill">Ong. Sanction ${money(es)}</span>
+          <span class="pill">Ong. Booked ${money(eb)}</span>
+          <span class="pill">Ong. Remaining ${money(er)}</span>
         </div>
       </div>
-      ${table(['#','Work Type / Shreni','GP','Works','Completed','Physically Completed','Ongoing','Verification','Sanction','Booked','Remaining Exp','Booked %','Part A','Part B','Total Marks','Action'],body)}
+      <div class="shreniFitTable">${table(['#','Work Type','GP','Works','Comp.','Phy. Comp.','Ong.','Verif.','Tot. Sanc.','Tot. Booked','Tot. Rem.','Exp %','Ong. Sanc.','Ong. Booked','Ong. Rem.','Ong. %','A','B','Marks','Action'],body)}</div>
     </div>`;
   }).join('');
 
@@ -1231,11 +1586,11 @@ function shreniWiseEngineerDetails(){
   const topCards = `<div class="grid section">
     <div class="card kpi"><div class="label">Engineer</div><div class="val">${selectedEngineerLabel}</div><small>${selectedEngineers.length===1?'Selected engineer':'All engineers'}</small></div>
     <div class="card kpi"><div class="label">Total Works</div><div class="val">${fmt(totalWorks)}</div><small>Filtered works</small></div>
-    <div class="card kpi"><div class="label">Sanction</div><div class="val" style="color:#7c3aed">${amountFmt(totalSanction)}</div><small>Total sanction</small></div>
-    <div class="card kpi"><div class="label">Booked</div><div class="val" style="color:#0f766e">${amountFmt(totalBooked)}</div><small>${pct(totalSanction?totalBooked/totalSanction*100:0)} booked</small></div>
-    <div class="card kpi"><div class="label">Remaining Exp</div><div class="val" style="color:#dc2626">${amountFmt(totalRemaining)}</div><small>Total remaining</small></div>
+    <div class="card kpi"><div class="label">Ongoing Sanction</div><div class="val" style="color:#7c3aed">${amountFmt(totalSanction)}</div><small>Ongoing sanction</small></div>
+    <div class="card kpi"><div class="label">Ongoing Booked</div><div class="val" style="color:#0f766e">${amountFmt(totalBooked)}</div><small>${pct(totalSanction?totalBooked/totalSanction*100:0)} booked</small></div>
+    <div class="card kpi"><div class="label">Ongoing Remaining Exp</div><div class="val" style="color:#dc2626">${amountFmt(totalRemaining)}</div><small>Ongoing remaining</small></div>
   </div>`;
-  app(`<h2>Shreni wise Engineer Details</h2><p class="muted">Engineer-wise card view: engineer का नाम एक बार दिखेगा और नीचे सभी work categories की table रहेगी, zero work categories सहित.</p>${topCards}${engineerCards}`);
+  app(`<h2>Shreni wise Engineer Details</h2><p class="muted">Engineer-wise card view: Part A total completion से और Part B official ongoing booked/sanctioned rule से calculate होगा.</p>${topCards}${engineerCards}`);
 }
 function openEngineerCategory(name,category){
   rememberDetailBack();
@@ -1244,15 +1599,18 @@ function openEngineerCategory(name,category){
   rows=rows.sort((a,b)=>String(a.block||'').localeCompare(String(b.block||''))||String(a.panchayat||'').localeCompare(String(b.panchayat||''))||String(workYear(b)).localeCompare(String(workYear(a))));
   hydrateFinYearsForRows(rows,()=>openEngineerCategory(name,category));
   const flags=rows.map(statusFlags);
-  const sanction=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0), booked=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0), rem=rows.reduce((a,w)=>a+remainingExp(w),0);
   const completedTotal=flags.filter(f=>f.comp).length;
   const physicalTotal=flags.filter(f=>f.phys).length;
+  const ongoingTotal=flags.filter(f=>f.ongoing).length;
+  const sanctionTotal=rows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0), bookedTotal=rows.reduce((a,w)=>a+Number(w.bookedAmount||0),0);
+  const ongoingRows=rows.filter(w=>statusFlags(w).ongoing);
+  const sanction=ongoingRows.reduce((a,w)=>a+Number(w.sanctionAmount||0),0), booked=ongoingRows.reduce((a,w)=>a+Number(w.bookedAmount||0),0), rem=ongoingRows.reduce((a,w)=>a+remainingExp(w),0);
   const partATotal=calcPartAFromCounts(completedTotal,physicalTotal,rows.length);
-  const partBTotal=calcPartBFromMoney(booked,sanction);
+  const partBTotal=calcPartBOfficial(rows.length,completedTotal,physicalTotal,ongoingTotal,booked,sanction);
   const totalMarks=partATotal+partBTotal;
-  const bygp={}; rows.forEach(w=>{let k=(w.block||'')+'||'+(w.panchayat||''); bygp[k]||(bygp[k]={janpad:w.block,gp:w.panchayat,works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0}); let g=bygp[k], f=statusFlags(w); g.works++; g.completed+=f.comp?1:0; g.physical+=f.phys?1:0; g.ongoing+=f.ongoing?1:0; g.needs+=w.needsVerification?1:0; g.sanction+=Number(w.sanctionAmount||0); g.booked+=Number(w.bookedAmount||0); g.remaining+=remainingExp(w); });
-  const gpRows=Object.values(bygp).map(g=>{g.partA=calcPartAFromCounts(g.completed,g.physical,g.works); g.partB=calcPartBFromMoney(g.booked,g.sanction); g.totalMarks=g.partA+g.partB; return g;}).sort((a,b)=>String(a.janpad).localeCompare(String(b.janpad))||String(a.gp).localeCompare(String(b.gp)));
-  app(`<button class="btn" onclick="engineerScorecard()">← Engineer Scorecard</button><h2>${category} — ${name}</h2><div class="section grid"><div class="card kpi"><div class="label">Total Works</div><div class="val">${fmt(rows.length)}</div><small>${category}</small></div><div class="card kpi"><div class="label">Completed + Physical</div><div class="val" style="color:#059669">${fmt(completedTotal+physicalTotal)}</div><small>Completed status</small></div><div class="card kpi"><div class="label">Ongoing</div><div class="val">${fmt(flags.filter(f=>f.ongoing).length)}</div><small>Running works</small></div><div class="card kpi"><div class="label">Sanction</div><div class="val" style="color:#7c3aed">${moneyCr(sanction)}</div><small>Total sanction</small></div><div class="card kpi"><div class="label">Booked</div><div class="val" style="color:#0f766e">${moneyCr(booked)}</div><small>${pct(sanction?booked/sanction*100:0)} booked</small></div><div class="card kpi"><div class="label">Remaining Exp</div><div class="val" style="color:#dc2626">${moneyCr(rem)}</div><small>Total remaining</small></div><div class="card kpi"><div class="label">Part A Marks</div><div class="val" style="color:#2563eb">${partATotal.toFixed(2)}</div><small>Completion marks /5</small></div><div class="card kpi"><div class="label">Part B Marks</div><div class="val" style="color:#16a34a">${partBTotal.toFixed(2)}</div><small>Booked marks /5</small></div><div class="card kpi"><div class="label">Total Marks</div><div class="val" style="color:#92400e">${totalMarks.toFixed(2)}</div><small>Part A + Part B /10</small></div></div><div class="section card"><h2>GP-wise Summary</h2>${table(['#','Janpad','GP','Works','Completed','Physically Completed','Ongoing','Verification','Sanction','Booked','Remaining Exp','Booked %','Part A','Part B','Total Marks'], gpRows.map((g,i)=>[i+1,g.janpad,g.gp,fmt(g.works),fmt(g.completed),fmt(g.physical),fmt(g.ongoing),fmt(g.needs),money(g.sanction),money(g.booked),money(g.remaining),pct(g.sanction?g.booked/g.sanction*100:0),g.partA.toFixed(2),g.partB.toFixed(2),g.totalMarks.toFixed(2)]))}</div><h2>Detailed Work List</h2>`+table(['#','FY','Work Code','Work Name','Janpad','GP','Status','Sanction','Booked','Remaining Exp','Booked %','Verification'], rows.map((w,i)=>[i+1,workYear(w),w.workCode,w.workName,w.block,w.panchayat,w.status,money(w.sanctionAmount),money(w.bookedAmount),money(remainingExp(w)),pct(w.expPercent),w.needsVerification?'<span class="pill gD">Needs Verification</span>':''])));
+  const bygp={}; rows.forEach(w=>{let k=(w.block||'')+'||'+(w.panchayat||''); bygp[k]||(bygp[k]={janpad:w.block,gp:w.panchayat,works:0,completed:0,physical:0,ongoing:0,needs:0,sanction:0,booked:0,remaining:0,totalSanction:0,totalBooked:0}); let g=bygp[k], f=statusFlags(w); g.works++; g.completed+=f.comp?1:0; g.physical+=f.phys?1:0; g.ongoing+=f.ongoing?1:0; g.needs+=w.needsVerification?1:0; g.totalSanction+=Number(w.sanctionAmount||0); g.totalBooked+=Number(w.bookedAmount||0); if(f.ongoing){g.sanction+=Number(w.sanctionAmount||0); g.booked+=Number(w.bookedAmount||0); g.remaining+=remainingExp(w);} });
+  const gpRows=Object.values(bygp).map(g=>{g.partA=calcPartAFromCounts(g.completed,g.physical,g.works); g.partB=calcPartBOfficial(g.works,g.completed,g.physical,g.ongoing,g.booked,g.sanction); g.totalMarks=g.partA+g.partB; g.bookedPct=g.sanction?g.booked/g.sanction*100:0; return g;}).sort((a,b)=>String(a.janpad).localeCompare(String(b.janpad))||String(a.gp).localeCompare(String(b.gp)));
+  app(`<button class="btn" onclick="engineerScorecard()">← Engineer Scorecard</button><h2>${category} — ${name}</h2><div class="section grid"><div class="card kpi"><div class="label">Total Works</div><div class="val">${fmt(rows.length)}</div><small>${category}</small></div><div class="card kpi"><div class="label">Completed + Physical</div><div class="val" style="color:#059669">${fmt(completedTotal+physicalTotal)}</div><small>Completed status</small></div><div class="card kpi"><div class="label">Ongoing</div><div class="val">${fmt(flags.filter(f=>f.ongoing).length)}</div><small>Running works</small></div><div class="card kpi"><div class="label">Ongoing Sanction</div><div class="val" style="color:#7c3aed">${moneyCr(sanction)}</div><small>Ongoing sanction</small></div><div class="card kpi"><div class="label">Ongoing Booked</div><div class="val" style="color:#0f766e">${moneyCr(booked)}</div><small>${pct(sanction?booked/sanction*100:0)} booked</small></div><div class="card kpi"><div class="label">Ongoing Remaining Exp</div><div class="val" style="color:#dc2626">${moneyCr(rem)}</div><small>Ongoing remaining</small></div><div class="card kpi"><div class="label">Part A Marks</div><div class="val" style="color:#2563eb">${partATotal.toFixed(2)}</div><small>Completion marks /5</small></div><div class="card kpi"><div class="label">Part B Marks</div><div class="val" style="color:#16a34a">${partBTotal.toFixed(2)}</div><small>Ongoing booked marks /5</small></div><div class="card kpi"><div class="label">Total Marks</div><div class="val" style="color:#92400e">${totalMarks.toFixed(2)}</div><small>Part A + Part B /10</small></div></div><div class="section card"><h2>GP-wise Summary</h2>${table(['#','Janpad','GP','Works','Completed','Physically Completed','Ongoing','Verification','Sanction','Booked','Remaining Exp','Booked %','Part A','Part B','Total Marks'], gpRows.map((g,i)=>[i+1,g.janpad,g.gp,fmt(g.works),fmt(g.completed),fmt(g.physical),fmt(g.ongoing),fmt(g.needs),money(g.sanction),money(g.booked),money(g.remaining),pct(g.sanction?g.booked/g.sanction*100:0),g.partA.toFixed(2),g.partB.toFixed(2),g.totalMarks.toFixed(2)]))}</div><h2>Detailed Work List</h2>`+table(['#','FY','Work Code','Work Name','Janpad','GP','Status','Sanction','Booked','Remaining Exp','Booked %','Verification'], rows.map((w,i)=>[i+1,workYear(w),w.workCode,w.workName,w.block,w.panchayat,w.status,money(w.sanctionAmount),money(w.bookedAmount),money(remainingExp(w)),pct(w.expPercent),w.needsVerification?'<span class="pill gD">Needs Verification</span>':''])));
 }
 function escapeAttr(s){return String(s||'').replaceAll('\\','\\\\').replaceAll("'","\\'").replaceAll('\n',' ')}
 function openGPList(name){
@@ -1408,7 +1766,7 @@ function openCategoryWorkList(name, category){
     <div class="card kpi"><div class="label">Physically Completed</div><div class="val">${fmt(physical)}</div></div>
     <div class="card kpi"><div class="label">Ongoing</div><div class="val">${fmt(ongoing)}</div></div>
     <div class="card kpi"><div class="label">Verification</div><div class="val">${fmt(needs)}</div></div>
-    <div class="card kpi"><div class="label">Remaining Exp</div><div class="val" style="font-size:25px">${money(rem)}</div></div>
+    <div class="card kpi"><div class="label">Ongoing Remaining Exp</div><div class="val" style="font-size:25px">${money(rem)}</div></div>
   </div>
   <div class="section card"><h2>Year-wise Summary</h2>${table(['Year','Works','Completed','Physical','Ongoing','Verification','Sanction','Booked','Remaining Exp'], summary.map(g=>[g.year,fmt(g.works),fmt(g.completed),fmt(g.physical),fmt(g.ongoing),fmt(g.needs),money(g.sanction),money(g.booked),money(g.remaining)]))}</div>
   <h2>Detailed Work List</h2>`+table(['#','Year','Work Code','Work Name','Janpad','GP','Type','Status','Sanction','Booked','Remaining Exp','Booked %','Verification'], rows.map((w,i)=>[i+1,workYear(w),w.workCode,w.workName,w.block,w.panchayat,w.workType,w.status,money(w.sanctionAmount),money(w.bookedAmount),money(remainingExp(w)),pct(w.expPercent),w.needsVerification?'<span class="pill gD">Needs Verification</span>':''])));
@@ -1746,5 +2104,54 @@ init();
     </div>
   </div>
 </div>
+
+
+<script id="jgsa-ready-controls">
+(function(){
+  function byId(id){return document.getElementById(id);}
+  window.applyThemeMode=function(mode){
+    const dark=mode==='dark';
+    document.body.classList.toggle('theme-dark',dark);
+    document.body.classList.toggle('theme-light',!dark);
+    localStorage.setItem('jgsaThemeMode',dark?'dark':'light');
+    ['themeInlineBtn','themeTopBtn','themeToggleBtn','themeFloatingToggle'].forEach(id=>{
+      const b=byId(id); if(b) b.innerHTML=dark?'☀️ Light Mode':'🌙 Dark Mode';
+    });
+  };
+  window.toggleThemeMode=function(){window.applyThemeMode(document.body.classList.contains('theme-dark')?'light':'dark');};
+  window.applySidebarMode=function(collapsed){
+    document.body.classList.toggle('sidebar-collapsed',!!collapsed);
+    localStorage.setItem('jgsaSidebarCollapsed',collapsed?'1':'0');
+    const b=byId('sidebarCollapseBtn'); if(b){b.innerHTML=collapsed?'☰':'←'; b.title=collapsed?'Show menu':'Hide menu';}
+  };
+  window.toggleSidebarMenu=function(){window.applySidebarMode(!document.body.classList.contains('sidebar-collapsed'));};
+  window.syncActiveTabUI=function(){
+    if(typeof active==='undefined') return;
+    document.querySelectorAll('.tab').forEach((b,di)=>{
+      const idx=b.dataset&&b.dataset.tabIndex!==undefined?Number(b.dataset.tabIndex):di;
+      b.classList.toggle('active',idx===active);
+    });
+  };
+  function ensure(){
+    if(!byId('sidebarCollapseBtn')){
+      const b=document.createElement('button'); b.id='sidebarCollapseBtn'; b.className='sidebarCollapseBtn'; b.type='button'; b.innerHTML='←'; document.body.appendChild(b);
+    }
+    byId('sidebarCollapseBtn').onclick=function(e){e.preventDefault(); window.toggleSidebarMenu();};
+    if(!byId('themeInlineBtn')){
+      const f=document.querySelector('.filters');
+      if(f){const t=document.createElement('button'); t.id='themeInlineBtn'; t.className='btn themeInlineBtn'; t.type='button'; t.onclick=window.toggleThemeMode; f.appendChild(t);}
+    }
+    window.applySidebarMode(localStorage.getItem('jgsaSidebarCollapsed')==='1');
+    window.applyThemeMode(localStorage.getItem('jgsaThemeMode')||'light');
+    window.syncActiveTabUI();
+  }
+  const oldRender=window.render;
+  if(typeof oldRender==='function'&&!oldRender.__readyWrapped){
+    const wrapped=function(){const r=oldRender.apply(this,arguments); setTimeout(window.syncActiveTabUI,0); return r;};
+    wrapped.__readyWrapped=true; window.render=wrapped;
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',ensure); else ensure();
+})();
+</script>
 
 </body></html>
