@@ -1,5 +1,5 @@
 window.JGSA_LIVE_DATA = {
-  "generatedAt": "2026-06-29T06:56:28.435174Z",
+  "generatedAt": "2026-06-29T10:10:18.380077Z",
   "date": "2026-06-29",
   "district": "SATNA",
   "sourceUrls": {
@@ -23,16 +23,16 @@ window.JGSA_LIVE_DATA = {
     "completed": 843,
     "completedOnly": 843,
     "physicalCompleted": 2766,
-    "totalCompleted": 3609,
-    "officialTotalCompleted": 3609,
+    "totalCompleted": 3734,
+    "officialTotalCompleted": 3734,
     "ongoing": 1090,
     "needsVerification": 41,
-    "sanction": 1217788968.0,
-    "booked": 755657718.0,
-    "bookedPct": 62.05,
+    "sanction": 1528900000.0,
+    "booked": 825700000.0,
+    "bookedPct": 54.01,
     "engineers": 59,
     "unmappedWorks": 0,
-    "abhiyanProgress": 2766
+    "abhiyanProgress": 3538
   },
   "works": [
     {
